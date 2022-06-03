@@ -1,69 +1,56 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-import motor.motor_asyncio #Motor serves as a MongoDB driver: API that allows non blocking access to MongoDB
-from pydantic import BaseModel
-from typing import List
-app = FastAPI() #Creates an instance of an api to use
-database = motor.motor_asyncio.AsyncIOMotorClient('mongodb://localhost:27017/').st #Connecting to MongoDB..
+import motor.motor_asyncio
+app = FastAPI()
+database = motor.motor_asyncio.AsyncIOMotorClient("mongodb://localhost:27017").st
 
-#from QuestionTR import Question
+#Question Routes
+from collections_db.question import Question
+import collections_db.question
 
-users_coll = database.users
-questions_coll = database["questions"]
-set_coll = database.sets
-
-class Question(BaseModel):
-    question: str
-    answer: str 
-    username: str
-    difficulty: str
-    player: str 
-    tags: List[str] = []
-
-
-origins = [
-    "https://localhost:8080"
-]
-
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins = origins,
-#     allow_credentials = True,
-#     allow_methods=["*"],
-#     allow_headers=["*"]
-# )
 @app.get("/")
-async def root():
-    return {"message": "Hello World"}
+def root():
+    return {"Hello":"FastAPI!"}
 
-@app.get("/questions/{question_id}")
-async def get_question(id):
-    try:
-        question = await questions_coll.find_one({"_id":id})
-        return question
-    except:
-        return "Question not found"
-
-@app.post("/questions/", response_model= Question)
-async def create_question(question: Question):
-    try:
-        newQuestion = await questions_coll.insert_one(question)
-        return newQuestion
-    except:
-        return None
-
-@app.delete("/questions/{question_id}", response_model = Question)
-async def delete_question(id):
-    question = await questions_coll.delete_one({"_id" : id})
+@app.get("/questions/{question_id", response_model=Question)
+async def GET_QUESTION(id):
+    question = await collections_db.question.get_question(id)
     return question
 
-@app.put("/questions/{question_id}", response_model=str)
-async def update_question(question: Question):
-    try:
-        update_question = await questions_coll.findOneAndUpdate({question._id},{question})
-        return "Question successfully updated"
-    except:
-        return "Question could not be updated"
+@app.post("/questions/", response_model=Question)
+async def post_question(question: Question):
+    question = await collections_db.question.create_question(question)
+    return question
 
+@app.delete("/questions/{question_id}", response_model=Question)
+async def DELETE_QUESTION(id):
+    question = await collections_db.question.delete_question(id)
+    return question
 
+@app.put("/questions/{question_id}", response_model=Question)
+async def put_question(id):
+    question = await collections_db.question.update_question(id)
+    return question
 
+#Set Routes
+from collections_db.sets import Set
+import collections_db.sets
+
+@app.get("/sets/{set_id}", response_model=Set)
+async def GET_SET(id):
+    set = await collections_db.sets.get_set(id)
+    return set
+
+@app.post("/sets/", response_model=Set)
+async def post_set(set: Set):
+    set = await collections_db.sets.create_set(set)
+    return set
+
+@app.delete("/sets/{set_id}", response_model=Set)
+async def remove_set(id):
+    set = await collections_db.sets.delete_set(id)
+    return set
+
+@app.put("/sets/{set_id}", response_model=Set)
+async def put_set(id):
+    set = await collections_db.sets.update_set(id)
+    return set
