@@ -1,78 +1,89 @@
-from typing import List
-from pydantic import BaseModel, Field
-from fastapi.encoders import jsonable_encoder
-from fastapi import APIRouter, HTTPException, Depends, Response
-from fastapi_jwt_auth import AuthJWT
-from collections_db.sets import Set
-from passlib.context import CryptContext
-from auth.token import Settings, get_config
-
-#Can modularize path operations w/the API Router
-router = APIRouter(
-    tags= ["users"]
-)
-
-#Field(...) is used to indicate a required field
-class User(BaseModel):
-    username: str = Field(...)
-    email: str = Field(...)
-    passwordHash: str = Field(...)
-    sets: List[Set]
-
-class LoggedInUser(BaseModel):
-    username: str = Field(...)
-    password: str = Field(...)
-
+#This is a basic authentication system using Oauth2 and JWTs
+from fastapi import Depends, APIRouter, HTTPException
 import sys
 sys.path.insert(0,"..")
 from server.app import users_coll
+from fastapi.encoders import jsonable_encoder
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from pydantic import BaseModel
+from passlib.context import CryptContext
+from jose import JWTError, jwt
+import os
+from dotenv import load_dotenv
 
+router = APIRouter(tags=["users"])
+
+#Using OAuth2 with Password flow and Bearer token (ie, header Authorization with "Bearer {token}")
+#As the tokenUrl is login, the user will be sending their info to the path "/login" to authenticate themselves
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+#pwd_context for checking and hashing passwords
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-@router.post("/register")
-async def register_user(user:User, response: Response, auth: AuthJWT = Depends()):
-    username = user.username
-    email = user.email
-    existing_username = await users_coll.find_one({"username": username})
-    existing_email = await users_coll.find_one({"email":email})
-    if existing_username:
-        raise HTTPException(status_code=400, detail="A user with this username already exists.")
-    elif existing_email: 
-        raise HTTPException(status_code=400, detail="A user with this email already exists")
-    else:
-        user.passwordHash = pwd_context.hash(user.passwordHash)
-        user = jsonable_encoder(user)
-        new_user = await users_coll.insert_one(user)
-        created_user = await users_coll.find_one({"_id":new_user.inserted_id},{'_id': 0})
-        token = auth.create_access_token(subject=created_user["username"])
-        #In order to send the cookie in the response, a parameter of 
-        #type Response can be included in the path function, and then passed
-        #into set_access_cookies. When this function returns an object now, the cookie 
-        #will be included along with that object
-        auth.set_access_cookies(token, response=response)
-        return {"msg": "User successfully registered"}
+#Creating/encoding a JWT using the secret from .env file
+load_dotenv()
+secret_key = os.getenv('JWT_SECRET')
+algorithm = "HS256"
 
-@router.get("/login")
-async def login_user(user:LoggedInUser, response: Response, auth: AuthJWT = Depends()):
-    existing_user = await users_coll.find_one({"username": user.username})
-    if not existing_user:
+class User(BaseModel):
+    username: str
+    passwordHash: str
+
+class RegisterUser(BaseModel):
+    username: str
+    password: str
+    password_confirmed: str
+
+class Token(BaseModel):
+    access_token: str
+
+#A user can register, but they must login after to receive a token (PasswordBearer only supports one url)
+@router.post("/register")
+async def register_user(user: RegisterUser):
+    #Check if a user with this username currently exists already
+    username_user = await users_coll.find_one({"username": user.username})
+    if username_user:
+        raise HTTPException(status_code=400, detail="A user with this username already exists")
+    else:
+        user.password = pwd_context.hash(user.password)
+        user = jsonable_encoder(user)
+        del user["password_confirmed"]
+        user = await users_coll.insert_one(user)
+        if user:
+            return {"msg": "user successfully registered!"}
+        raise HTTPException(status_code=400, detail="An error occurred while trying to register this user")
+    
+#OAuth2PasswordRequestForm is a dependency that creates a form with the entered username and password
+#Since this routes path is "/token", it will be called once the user enters their info into the request form
+@router.post("/login", response_model=Token)
+async def login_user(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = await users_coll.find_one({"username": form_data.username})
+    if not user:
         raise HTTPException(status_code=400, detail="Incorrect username")
-    elif not pwd_context.verify(user.password, existing_user.passwordHash):
+    elif not pwd_context.verify(form_data.password, user["password"]):
         raise HTTPException(status_code=400, detail="Incorrect password")
     else:
-        #Create, store, and return a JWT in a cookie
-        token = auth.create_access_token(subject=user.username)
-        auth.set_access_cookies(token, response=response)
-        return {"msg": "User successfully logged in"}
+        #Create and send a JWT for the user to use for authorization
+        token = jwt.encode({"user": user["username"]}, secret_key, algorithm= algorithm)
+        return {"access_token": token}
 
-@router.put("/usersets")
-async def update_user_sets(user: User):
-    user = jsonable_encoder(user)
-    user = await users_coll.findOneAndUpdate({user.inserted_id}, {user})
+#From FastAPI documentation: this will serve as authorization for all routes
+#Once the user authenticates, oauth2_scheme will check for their token, which is why its a dependency
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    username = None
+    try:
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        username = payload.get("user")
+        if username is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    user = await users_coll.find_one({"username": username})
+    if user is None:
+        raise credentials_exception
     return user
-
-@router.put("/logout")
-async def logout(auth: AuthJWT = Depends()):
-    auth.jwt_required()
-    auth.unset_jwt_cookies()
-    return {"msg": "Successfully logged out"}
