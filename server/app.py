@@ -10,10 +10,12 @@ users_coll = database.get_collection("users")
 
 #Include the different endpoints for each collection
 from collections_db import question, sets, users
+from aggregation_routes import router as aggregation_router
 
 app.include_router(users.router)
 app.include_router(question.router)
 app.include_router(sets.router)
+app.include_router(aggregation_router)
 
 app.add_middleware(
     CORSMiddleware,

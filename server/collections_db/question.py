@@ -5,9 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi import APIRouter, Depends, Body, HTTPException
 
 #Can modularize path operations w/the API Router
-router = APIRouter(
-    tags=["questions"],
-)
+router = APIRouter(tags=["questions"])
 
 #Field(...) is used to indicate a required field
 class Question(BaseModel):
