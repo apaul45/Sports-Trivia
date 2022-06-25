@@ -4,11 +4,10 @@ const api = axios.create({
     baseURL: 'http://127.0.0.1:8000'
 });
 
-export const createQuestion = (payload) => api.post(`/questions`, payload);
-export const deleteQuestion = (id) => api.delete(`/questions/${id}`);
-export const updateQuestion = (id, payload) => api.put(`/questions/${id}`, payload);
-export const getAllQuestions = () => api.get(`/questions/get_all`);
-export const getQuestion = (id) => api.get(`/questions/${id}`);
+export const createQuestion = (payload) => api.post(`/question`, payload);
+export const deleteQuestion = (question) => api.delete(`/questions/${question}`);
+export const updateQuestion = (question, payload) => api.put(`/${question}`, payload);
+export const getAllQuestions = () => api.get(`/questions`);
 
 export const createSet = (payload) => api.post(`/sets/`, payload);
 export const deleteSet = (id) => api.delete(`/sets/${id}`);
@@ -26,7 +25,6 @@ const backendApi = {
     deleteQuestion,
     updateQuestion, 
     getAllQuestions, 
-    getQuestion,
 
     createSet,
     deleteSet, 

@@ -39,9 +39,7 @@ async def get_all_questions():
     questions = await questions_coll.find({},{'_id': 0}).to_list(length=None)
     return questions
 
-#Token Required Functions
-#When a request arrives, FastAPI will call the function specified by Depends(),
-#and include the result in the path operation's parameters
+#Token Required Functions: via dependency on oauth2 password bearer through get_current_user function
 @router.post("/question", response_model=Question)
 async def create_question(question: Question = Body(...), user = Depends(get_current_user)) -> Question:
     #First verify that this question doesn't already exist 
@@ -58,14 +56,17 @@ async def create_question(question: Question = Body(...), user = Depends(get_cur
 @router.delete("/{question}")
 async def delete_question(question: str, user = Depends(get_current_user)):
     question = await questions_coll.delete_one({"question": question})
+    #question is of type pymongo.Results.DeleteResult, check pymongo doc for more detail
     if question.deleted_count == 1:
         return {"msg": "Question successfully deleted!"}
-    raise HTTPException(status_code=400, detail="Question could not be deleted")
+    raise HTTPException(status_code=400, detail="This question could not be deleted. Please try again later")
 
 @router.put("/{question}")
 async def update_question(question: str, question_obj: UpdateQuestionModel = Body(...), user = Depends(get_current_user)):
     question_obj = {k: v for k, v in question_obj.dict().items() if v is not None} #Needed to remove missing fields
     if len(question_obj) > 0: 
         updated_question = await questions_coll.update_one({"question": question}, {"$set": question_obj})
-        return {"msg": "Question successfully updated!"}
+        #updated_question is of type pymongo.Results.UpdatedResult, check pymongo doc for more info on returned fields
+        if updated_question.modified_count == 1:
+            return {"msg": "Question successfully updated!"}
     return {"msg": "Please input a updated question"}
