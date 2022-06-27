@@ -36,7 +36,7 @@ async def create_set(newSet: Set = Body(...), user = Depends(get_current_user))-
     createdSet = await set_coll.find_one({"_id": set.inserted_id})
     return createdSet
 
-@router.delete("/{set_id}")
+@router.delete("/set/{set_id}")
 async def delete_set(id: int, user = Depends(get_current_user)):
     set = await set_coll.delete_one({"position": id})
     #set is of type pymongo.Results.DeleteResult, check pymongo doc for more info
@@ -44,7 +44,7 @@ async def delete_set(id: int, user = Depends(get_current_user)):
         return {"msg": "Set successfully deleted!"}
     raise HTTPException(status_code=400, detail="This set could not be deleted. Please try again later")
 
-@router.put("/{set_id}")
+@router.put("/set/{set_id}")
 async def update_set(set : Set = Body(...), user = Depends(get_current_user)):
     updated_set = await set_coll.update_one({"position": set.position}, {"$set": set})
     #updated_set is of type pymongo.Results.UpdatedResult, check pymongo doc for more info on returned fields

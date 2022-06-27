@@ -51,7 +51,7 @@ async def create_question(question: Question = Body(...), user = Depends(get_cur
         createdQuestion = await questions_coll.find_one({"_id": newQuestion.inserted_id})
         return createdQuestion
 
-@router.delete("/{question}")
+@router.delete("/question/{question}")
 async def delete_question(question: str, user = Depends(get_current_user)):
     question = await questions_coll.delete_one({"question": question})
     #question is of type pymongo.Results.DeleteResult, check pymongo doc for more detail
@@ -59,7 +59,7 @@ async def delete_question(question: str, user = Depends(get_current_user)):
         return {"msg": "Question successfully deleted!"}
     raise HTTPException(status_code=400, detail="This question could not be deleted. Please try again later")
 
-@router.put("/{question}")
+@router.put("/question/{question}")
 async def update_question(question: str, question_obj: UpdateQuestionModel = Body(...), user = Depends(get_current_user)):
     question_obj = {k: v for k, v in question_obj.dict().items() if v is not None} #Needed to remove missing fields
     if len(question_obj) > 0: 

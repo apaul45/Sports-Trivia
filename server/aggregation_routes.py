@@ -1,7 +1,5 @@
 from typing import List
 from app import questions_coll, set_coll
-from collections_db.users import get_current_user
-from collections_db.sets import Set
 from collections_db.question import Question
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -52,12 +50,12 @@ async def get_player_user_questions(query_field: str, query_value: str):
 #Routes
 
 #Aggregation Routes for Questions
-@router.get("/questions/player", response_description="Gets all the questions associated with a specific player, grouped by difficulty")
-async def get_player_questions(player: str, user = Depends(get_current_user)):
+@router.get("/player-questions/{player}", response_description="Gets all the questions associated with a specific player, grouped by difficulty")
+async def get_player_questions(player: str):
     return await get_player_user_questions("player", player)
 
-@router.get("/questions/user", response_description="Gets the questions associated with a user, grouped by difficulty")
-async def get_user_questions(username: str, user = Depends(get_current_user)):
+@router.get("/user-questions/{user}", response_description="Gets the questions associated with a user, grouped by difficulty")
+async def get_user_questions(username: str):
     return await get_player_user_questions("username", username)
 
 @router.post("/tag-questions", response_model = List[Question], response_description="Gets all the questions associated with certain tags")
