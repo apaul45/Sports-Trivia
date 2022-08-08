@@ -1,8 +1,10 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue'
 import backendApi from 'src/boot/axios.ts'
+import AddQuestionModalVue from './AddQuestionModal.vue';
 
 const questions = ref([])
+const visible = ref(false); //used to invoke add form modal
 
 onBeforeMount(async() => {
     const response = await backendApi.getAllQuestions()
@@ -45,24 +47,21 @@ const columns = [
 
 <template>
     <div class="q-pa-md">
-        <!-- <q-btn dropdown color="gray" label="Sort By" dropdown-icon="change_history">
-            <q-list>
-                <q-item clickable v-close-popup>
-                    Difficulty
-                </q-item>
-                <q-item clickable v-close-popup>
-                    Player
-                </q-item>
-            </q-list>
-        </q-btn> -->
-
-        <!-- <q-btn color="red" text-color="white">Press to fill table</q-btn> -->
-
         <q-table
          :rows="questions"
          :columns="columns"
          row-key="name"
        />
+        <q-btn label="Add a Question" no-caps color="primary" @click="visible = true" />
+        
+        <!-- v-model can be used to control the displaying and hiding of the add modal, 
+        as it is the same as v-binding the visible ref and providing a update:visible event to change 
+        the original visible ref in this component. 
+        
+        In other words, it can be used to sync a prop with a ref variable
+        https://vuejs.org/guide/components/events.html#usage-with-v-model
+        -->
+        <add-question-modal-vue v-model:visible="visible"/>
     </div>
 </template>
 

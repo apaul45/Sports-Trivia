@@ -9,16 +9,7 @@ async function login () {
   console.log('reached login function')
   const response1 = await backendApi.loginUser('apaul21', 'testingfromvue')
   console.log(response1)
-  backendApi.setHeader(response1.data.access_token)
-
-  const response2 = await backendApi.createQuestion({
-    question: 'With what pick did the New York Giants draft Odell Beckham Jr in the 2014 NFL Draft?',
-    answer: '12',
-    difficulty: 'easy',
-    player: 'Odell Beckham Jr',
-    tags: ['NFL', 'NFL Draft', 'Giants', 'New York Giants', 'New York Football Giants']
-  })
-  console.log(response2)
+  backendApi.setHeader(response1.data.access_token);
 }
 
 async function getQuery () {
@@ -31,8 +22,6 @@ async function getQuery () {
 
 <template>
   <div>
-    <q-btn color="primary" @click="login">Press this button to login</q-btn>
-
     <h5>Please enter a query</h5>
     <input v-model="query">
     <q-btn color="primary" @click="getQuery">Submit</q-btn>
