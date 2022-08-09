@@ -3,6 +3,7 @@
     import backendApi from '../boot/axios'
 
     const props = defineProps({visible: Boolean});
+    const emit = defineEmits(['update: visible']); //Used to trigger an event to parent component
 
     const defaultQuestion = {
         question: "", 
@@ -17,11 +18,12 @@
 
     const question = ref(defaultQuestion);
 
-    function addQuestion(){
-        // question.value.username = "stringapaul32";
-        // const response = await backendApi.createQuestion(question.value);
-        // console.log(response);
-        console.log(question);
+    async function addQuestion(){
+        question.value.username = "apaul21";
+        const response = await backendApi.createQuestion(question.value);
+        console.log(response);
+        question = defaultQuestion;
+        emit('update:visible', false);
     }   
 </script>
 
@@ -45,9 +47,9 @@
                             </q-input>
                         </div>
 
-                        <q-radio v-model="question.difficulty" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="line" label="easy" />
-                        <q-radio v-model="question.difficulty" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="rectangle" label="medium" />
-                        <q-radio v-model="question.difficulty" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="ellipse" label="hard" />
+                        <q-radio v-model="question.difficulty" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="easy" label="Easy" />
+                        <q-radio v-model="question.difficulty" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="medium" label="Medium" />
+                        <q-radio v-model="question.difficulty" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="hard" label="Hard" />
 
                         <q-select
                         label="Tags"
@@ -63,14 +65,9 @@
                         />
 
                         <q-btn @click="addQuestion" label="Submit" type="submit" color="primary"/>
-                        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-
+                        <q-btn flat label="Cancel" color="primary" v-close-popup @click="$emit('update:visible', false)" />
                     </q-form>
                 </q-card-section>
-
-                <q-card-actions>
-                    <q-btn flat label="Cancel" color="primary" v-close-popup @click="$emit('update:visible', false)" />
-                </q-card-actions>
             </q-card>
         </q-dialog>
 </template>

@@ -40,19 +40,48 @@ const columns = [
         label: 'Difficulty',
         align: 'left',
         field: (row) => row.difficulty
+    },
+    {
+        name: 'tags',
+        required: true, 
+        label: "Tags",
+        align:'center',
+        field: (row) => createTagCards(row.tags)
     }
 ]
+
+const createTagCards = (tags) => {
+    return <div style="overflow: auto; line-height: 3.5;"> 
+                {
+                    tags.map(tag =>
+                    <>
+                        &nbsp;
+                        <div style="display: inline; padding: 7px; text-color: white; border-radius: 25px; background-color: #7CCB96; text-align: center; outline-style: solid">
+                            {tag}
+                        </div>
+                        &nbsp; 
+                    </>
+                    )
+                }
+           </div>
+}
 
 </script>
 
 <template>
+    <h1 id="questions">Browse Questions</h1>
     <div class="q-pa-md">
         <q-table
+         id="question-table"
          :rows="questions"
          :columns="columns"
          row-key="name"
        />
-        <q-btn label="Add a Question" no-caps color="primary" @click="visible = true" />
+        <q-btn 
+        @click="visible = true" 
+        label="Add a Question" 
+        no-caps color="primary"
+        />
         
         <!-- v-model can be used to control the displaying and hiding of the add modal, 
         as it is the same as v-binding the visible ref and providing a update:visible event to change 
@@ -65,8 +94,14 @@ const columns = [
     </div>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
     tr{
         background-color: #B9EBC4 !important;
+    }
+    #questions {
+        font-size: 40px;
+        font-weight: 500;
+        text-align: center;
+        justify-content: center;
     }
 </style>

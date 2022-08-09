@@ -5,9 +5,12 @@ import backendApi from 'src/boot/axios.ts'
 const value = ref('')
 const query = ref('')
 
-async function login () {
-  console.log('reached login function')
-  const response1 = await backendApi.loginUser('apaul21', 'testingfromvue')
+async function login() {
+  const formData = new FormData();
+  formData.append('grant_type', 'password')
+  formData.append('username', "apaul21")
+  formData.append('password', "testingfromvue")
+  const response1 = await backendApi.loginUser(formData);
   console.log(response1)
   backendApi.setHeader(response1.data.access_token);
 }
@@ -25,6 +28,8 @@ async function getQuery () {
     <h5>Please enter a query</h5>
     <input v-model="query">
     <q-btn color="primary" @click="getQuery">Submit</q-btn>
+
+    <q-btn color="red" text-color="white" @click="login" style="float: right;">Login</q-btn>
 
     <div v-if="value != null">
       <div v-for="list in value" v-bind:key="list.doc">

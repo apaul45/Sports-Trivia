@@ -1,6 +1,6 @@
 <template>
   <nav-bar-vue />
-  <EssentialLinkVue />
+  <!-- <EssentialLinkVue /> -->
   <browse-questions-vue />
 </template>
 
