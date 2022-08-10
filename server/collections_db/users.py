@@ -67,6 +67,13 @@ async def login_user(form_data: OAuth2PasswordRequestForm = Depends()):
         token = jwt.encode({"user": user["username"]}, secret_key, algorithm= algorithm)
         return {"access_token": token}
 
+@router.get("/users")
+async def get_all_users():
+    #Use {_id: 0} to ignore the _id field when requesting: this is to prevent issues regarding ObjectIds in MongoDB
+    #Adding {username: 1} allows for only returning the username of each document 
+    users = await users_coll.find({},{'username': 1, '_id': 0}).to_list(length=None)
+    return users
+
 #From FastAPI documentation: this will serve as authorization for all routes
 #Once the user authenticates, oauth2_scheme will check for their token, which is why its a dependency
 async def get_current_user(token: str = Depends(oauth2_scheme)):

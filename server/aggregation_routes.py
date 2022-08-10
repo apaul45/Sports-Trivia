@@ -68,6 +68,10 @@ async def get_tag_questions(tags: List) -> List[Question]:
     }
     return await questions_coll.find(query, {'_id': 0}).to_list(length = None)
 
+@router.get("/tags", response_model=List[str], response_description="Returns a list of all unique tags found linked to questions")
+async def get_tags() -> List[str]:
+    return await questions_coll.distinct("tags")
+
 #Aggregation Routes for Sets
 @router.get("/sets/{username}", response_description="Returns the sets made by a user, along with their average rating")
 async def get_user_sets(username: str):

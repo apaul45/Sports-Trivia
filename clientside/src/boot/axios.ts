@@ -21,18 +21,21 @@ export function setHeader(token: string){
 export const createQuestion = (payload: Question) => api.post('/question', payload)
 export const deleteQuestion = (question: string) => api.delete(`/question/${question}`)
 export const updateQuestion = (question: string, payload: unknown) => api.put(`/question/${question}`, payload)
-export const getAllQuestions = () => api.get('/questions')
 
 export const createSet = (payload: Set) => api.post('/set', payload)
 export const deleteSet = (id: number) => api.delete(`/set/${id}`)
 export const updateSet = (id: number, payload: unknown) => api.put(`/set/${id}`, payload)
-export const getAllSets = () => api.get('/sets')
 
 export const registerUser = (payload: User) => api.post('/register', payload)
 export const loginUser = (form: FormData) => { return api.post('/login', form) }
 // export const logout = () => api.put(`/logout`);
 
 // Query Routes
+export const getAllQuestions = () => api.get('/questions')
+export const getAllUsers = () => api.get('/users')
+export const getAllTags = () => api.get('/tags')
+export const getAllSets = () => api.get('/sets')
+
 export const getPlayerQuestions = (player: string) => { return api.get(`/player-questions/${player}`) }
 export const getUserQuestions = (user: string) => { return api.get(`/user-questions/{user}?username=${user}`) }
 export const getTagQuestions = (tags: Array<string>) => api.post('/tag-questions', tags)
@@ -45,16 +48,18 @@ const backendApi = {
   createQuestion,
   deleteQuestion,
   updateQuestion,
-  getAllQuestions,
 
   createSet,
   deleteSet,
   updateSet,
-  getAllSets,
 
   registerUser,
   loginUser,
 
+  getAllQuestions,
+  getAllUsers,
+  getAllTags,
+  getAllSets,
   getPlayerQuestions,
   getUserQuestions,
   getTagQuestions,

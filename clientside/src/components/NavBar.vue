@@ -9,9 +9,9 @@
             flat 
             no-caps 
             padding="none"
-            :ripple="false" 
             size="40px" 
             class="home"
+            v-close-popup
             > 
                 Sports Trivia 
             </q-btn>
