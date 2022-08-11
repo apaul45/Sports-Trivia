@@ -1,11 +1,9 @@
 <template>
-  <nav-bar-vue />
-  <!-- <EssentialLinkVue /> -->
-  <browse-questions-vue />
+  <nav-bar />
+  <router-view />
 </template>
 
 <script setup>
-  import EssentialLinkVue from './components/EssentialLink.vue';
-  import BrowseQuestionsVue from './components/BrowseQuestions.vue';
-  import NavBarVue from './components/NavBar.vue';
+import { RouterView } from 'vue-router';
+import NavBar from './components/NavBar.vue';
 </script>

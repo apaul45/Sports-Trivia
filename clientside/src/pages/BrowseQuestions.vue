@@ -1,54 +1,8 @@
 <template>
     <h1 id="questions">Browse Questions</h1>
     <div class="q-pa-md">
-        <div class="q-gutter-md row items-start">
-            <q-input 
-            style="width: 40%"
-            outlined 
-            v-model="text" 
-            >
-                <template v-slot:prepend>
-                     <q-icon name="search" />
-                 </template>
-            </q-input>
 
-            <q-space />
-            
-            <q-btn-dropdown color="grey-3" text-color="black" size="lg" no-caps label="Users">
-                <q-list>
-                    <q-item v-for="user in users" clickable v-close-popup>
-                        {{user.username}}
-                    </q-item>
-                </q-list>
-            </q-btn-dropdown>
-
-            <q-select
-            filled
-            bg-color="grey-3"
-            label="Tags"
-            v-model="model"
-            use-input
-            use-chips
-            multiple
-            :options="tags"
-            @filter="filterFn"
-            style="width: 250px"
-            >
-                <template v-slot:append>
-                    <q-btn @click="doNothing" color="primary" type="submit"  label="Submit"/>
-                </template>
-            </q-select>
-
-            <q-btn-dropdown color="grey-3" text-color="black" size="lg"  no-caps label="Sort By">
-                <q-list>
-                    <q-item clickable v-close-popup @click="onItemClick">
-                        <q-item-section>
-                            <q-item-label>Difficulty</q-item-label>
-                        </q-item-section>
-                    </q-item>
-                </q-list>
-            </q-btn-dropdown>
-        </div>
+        <filter-sort-questions-vue />
 
         <br/>
 
@@ -78,22 +32,16 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue'
 import backendApi from 'src/boot/axios.ts'
-import AddQuestionModalVue from './AddQuestionModal.vue';
+import AddQuestionModalVue from '../components/AddQuestionModal.vue';
+import FilterSortQuestionsVue from 'src/components/FilterSortQuestions.vue';
 
 const questions = ref([])
-const users = ref([])
-const tags = ref([])
 const visible = ref(false); //used to invoke add form modal
 
 onBeforeMount(async() => {
     let response = await backendApi.getAllQuestions()
     console.log(response);
     questions.value = response.data
-    response = await backendApi.getAllUsers()
-    console.log(response)
-    users.value = response.data
-    response = await backendApi.getAllTags()
-    tags.value = response.data
 })
 
 const columns = [
@@ -133,8 +81,6 @@ const columns = [
         field: (row) => createTagCards(row.tags)
     }
 ]
-
-const doNothing = () => {}
 
 const createTagCards = (tags) => {
     const style = "display: inline; \
