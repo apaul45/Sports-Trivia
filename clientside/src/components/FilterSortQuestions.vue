@@ -1,7 +1,10 @@
 <script setup>
-import {onBeforeMount, ref} from 'vue'
+import {onBeforeMount, ref, watch} from 'vue'
 import backendApi from 'src/boot/axios';
 
+const props = defineProps({questions});
+
+const searchText = ref('');
 const users = ref([])
 const tags = ref([])
 
@@ -12,7 +15,13 @@ onBeforeMount(async() => {
     response = await backendApi.getAllTags()
     tags.value = response.data
 });
+
 const doNothing = () => {}
+
+watch(searchText, (newText, oldText) => {
+    if (newText === '') filteredQuestions = props.questions;
+    else filteredQuestions.value = filteredQuestions.value.filter(question => question.player === newText);
+})
 
 </script>
 
@@ -21,7 +30,7 @@ const doNothing = () => {}
         <q-input 
         style="width: 40%"
         outlined 
-        v-model="text" 
+        v-model="searchText" 
         >
             <template v-slot:prepend>
                 <q-icon name="search" />

@@ -1,9 +1,6 @@
 <template>
     <h1 id="questions">Browse Questions</h1>
     <div class="q-pa-md">
-
-        <filter-sort-questions-vue />
-
         <br/>
 
         <q-table
@@ -33,15 +30,16 @@
 import { ref, onBeforeMount } from 'vue'
 import backendApi from 'src/boot/axios.ts'
 import AddQuestionModalVue from '../components/AddQuestionModal.vue';
-import FilterSortQuestionsVue from 'src/components/FilterSortQuestions.vue';
 
-const questions = ref([])
+const questions = ref([]);
+let filteredQuestions = [];
 const visible = ref(false); //used to invoke add form modal
 
 onBeforeMount(async() => {
     let response = await backendApi.getAllQuestions()
     console.log(response);
-    questions.value = response.data
+    questions.value = response.data;
+    filteredQuestions = questions.value;
 })
 
 const columns = [
@@ -81,6 +79,8 @@ const columns = [
         field: (row) => createTagCards(row.tags)
     }
 ]
+
+const filterQuestions = () => {}
 
 const createTagCards = (tags) => {
     const style = "display: inline; \
