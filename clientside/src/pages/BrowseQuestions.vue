@@ -1,14 +1,27 @@
 <template>
-    <h1 id="questions">Browse Questions</h1>
+
+    <h1 v-if="this.$route.path === '/questions/'" id="questions">Browse Questions</h1>
+    <h1 v-else id="questions">Add Questions</h1>
+
     <div class="q-pa-md">
         <br/>
+        
+        <!-- Make sure to correctly configure the row key to be unique 
+        so all rows aren't selected when one row is selected -->
+        <q-table v-if="this.$route.path === '/questions/add'"
+        :rows="questions"
+        :columns="columns"
+        row-key="question"
+        selection="multiple"
+        v-model:selected="selectedQuestions"
+        />
 
-        <q-table
+        <q-table v-else
          id="question-table"
          :rows="questions"
          :columns="columns"
-         row-key="name"
-       />
+        />
+
         <q-btn 
         @click="visible = true" 
         label="Add a Question" 
@@ -32,23 +45,23 @@ import backendApi from 'src/boot/axios.ts'
 import AddQuestionModalVue from '../components/AddQuestionModal.vue';
 
 const questions = ref([]);
-let filteredQuestions = [];
+const selectedQuestions = ref([]); //Used when user choosing questions to add to a set
 const visible = ref(false); //used to invoke add form modal
 
 onBeforeMount(async() => {
     let response = await backendApi.getAllQuestions()
     console.log(response);
     questions.value = response.data;
-    filteredQuestions = questions.value;
 })
 
 const columns = [
     {
-        name: 'user',
+        name: 'username',
         required: true,
         label: 'User',
         align: 'left',
-        field: (row) => row.username
+        field: (row) => row.username,
+        sortable: true
     },
     {
         name: 'question',
@@ -69,7 +82,8 @@ const columns = [
         required: true,
         label: 'Difficulty',
         align: 'left',
-        field: (row) => row.difficulty
+        field: (row) => row.difficulty,
+        sortable: true
     },
     {
         name: 'tags',
@@ -79,8 +93,6 @@ const columns = [
         field: (row) => createTagCards(row.tags)
     }
 ]
-
-const filterQuestions = () => {}
 
 const createTagCards = (tags) => {
     const style = "display: inline; \
@@ -96,9 +108,7 @@ const createTagCards = (tags) => {
                     tags.map(tag =>
                     <>
                         &nbsp;
-                        <div style={style}>
-                            {tag}
-                        </div>
+                        <div style={style}>{tag}</div>
                         &nbsp; 
                     </>
                     )

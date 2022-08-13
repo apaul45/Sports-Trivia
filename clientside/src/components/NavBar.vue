@@ -1,5 +1,4 @@
 <script setup>
-import router from 'src/router';
 </script>
 
 <template>

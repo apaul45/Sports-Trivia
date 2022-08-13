@@ -1,30 +1,30 @@
 <script setup>
-    import {ref} from 'vue';
-    import backendApi from '../boot/axios'
+import {ref} from 'vue';
+import backendApi from '../boot/axios'
 
-    const props = defineProps({visible: Boolean});
-    const emit = defineEmits(['update: visible']); //Used to trigger an event to parent component
+const props = defineProps({visible: Boolean});
+const emit = defineEmits(['update: visible']); //Used to trigger an event to parent component
 
-    const defaultQuestion = {
-        question: "", 
-        answer: "", 
-        difficulty: "", 
-        tags: [],
-        username: "", 
-        player: ""
-    }
+const defaultQuestion = {
+    question: "", 
+    answer: "", 
+    difficulty: "", 
+    tags: [],
+    username: "", 
+    player: ""
+}
 
-    const inputFields = ["question", "answer", "player"]; //Use to reduce duplicate q-inputs
+const inputFields = ["question", "answer", "player"]; //Use to reduce duplicate q-inputs
 
-    const question = ref(defaultQuestion);
+const question = ref(defaultQuestion);
 
-    async function addQuestion(){
-        question.value.username = "apaul21";
-        const response = await backendApi.createQuestion(question.value);
-        console.log(response);
-        question = defaultQuestion;
-        emit('update:visible', false);
-    }   
+async function addQuestion(){
+    question.value.username = "apaul21";
+    const response = await backendApi.createQuestion(question.value);
+    console.log(response);
+    question = defaultQuestion;
+    emit('update:visible', false);
+}   
 </script>
 
 <template>
