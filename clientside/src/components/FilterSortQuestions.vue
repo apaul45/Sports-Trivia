@@ -2,7 +2,8 @@
 import {onBeforeMount, ref, watch} from 'vue'
 import backendApi from 'src/boot/axios';
 
-const props = defineProps({questions});
+const props = defineProps({filteredQuestions: Array, questions: Array});
+const emit = defineEmits(['update:filteredQuestions']);
 
 const searchText = ref('');
 const users = ref([])
@@ -18,11 +19,20 @@ onBeforeMount(async() => {
 
 const doNothing = () => {}
 
-watch(searchText, (newText, oldText) => {
-    if (newText === '') filteredQuestions = props.questions;
-    else filteredQuestions.value = filteredQuestions.value.filter(question => question.player === newText);
-})
+watch(searchText, (newText) => {
+    filterQuestions(newText, 'player');
+});
 
+const filterQuestions = (newText, field) => {
+    let result = [];
+    
+    if (newText.length == 0) result = props.questions;
+    else result = props.filteredQuestions.filter((question) => question[field] === newText);
+
+    console.log(result);
+
+    emit('update:filteredQuestions', result);
+}
 </script>
 
 <template>
@@ -41,7 +51,7 @@ watch(searchText, (newText, oldText) => {
         
         <q-btn-dropdown color="grey-3" text-color="black" size="lg" no-caps label="Users">
             <q-list>
-                <q-item v-for="user in users" clickable v-close-popup>
+                <q-item v-for="user in users" clickable v-close-popup @click="filterQuestions(user.username, 'username')">
                     {{user.username}}
                 </q-item>
             </q-list>

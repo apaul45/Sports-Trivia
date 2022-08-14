@@ -1,15 +1,19 @@
 <template>
 
-    <h1 v-if="this.$route.path === '/questions/'" id="questions">Browse Questions</h1>
+    <h1 v-if="this.$route.path !== '/questions/add'" id="questions">Browse Questions</h1>
     <h1 v-else id="questions">Add Questions</h1>
 
     <div class="q-pa-md">
         <br/>
         
+        <filter-sort-questions v-model:filteredQuestions="filteredQuestions" v-model:questions="questions"/>
+
+        <br/>
+
         <!-- Make sure to correctly configure the row key to be unique 
         so all rows aren't selected when one row is selected -->
         <q-table v-if="this.$route.path === '/questions/add'"
-        :rows="questions"
+        :rows="filteredQuestions"
         :columns="columns"
         row-key="question"
         selection="multiple"
@@ -18,7 +22,7 @@
 
         <q-table v-else
          id="question-table"
-         :rows="questions"
+         :rows="filteredQuestions"
          :columns="columns"
         />
 
@@ -43,16 +47,18 @@
 import { ref, onBeforeMount } from 'vue'
 import backendApi from 'src/boot/axios.ts'
 import AddQuestionModalVue from '../components/AddQuestionModal.vue';
+import FilterSortQuestions from 'src/components/FilterSortQuestions.vue';
 
-const questions = ref([]);
+const questions = ref([]); //Array of all questions from backend: must be ref so that child component (filtersortquestions) receives correct value
+const filteredQuestions = ref([]);
 const selectedQuestions = ref([]); //Used when user choosing questions to add to a set
 const visible = ref(false); //used to invoke add form modal
 
 onBeforeMount(async() => {
     let response = await backendApi.getAllQuestions()
-    console.log(response);
     questions.value = response.data;
-})
+    filteredQuestions.value = questions.value;
+});
 
 const columns = [
     {
