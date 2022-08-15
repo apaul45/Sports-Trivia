@@ -1,44 +1,60 @@
 <script setup>
-import {onBeforeMount, ref, watch} from 'vue'
+import {onBeforeMount, ref} from 'vue'
 import backendApi from 'src/boot/axios';
 
-const props = defineProps({filteredQuestions: Array, questions: Array});
+const props = defineProps({filteredQuestions: Array});
 const emit = defineEmits(['update:filteredQuestions']);
 
 const searchText = ref('');
-const users = ref([])
-const tags = ref([])
+const users = ref([]);
+const filteredUsers = ref([]);
+const tags = ref([]);
+const filteredTags = ref([]);
 
 onBeforeMount(async() => {
     let response = await backendApi.getAllUsers()
     console.log(response)
-    users.value = response.data
+    users.value = response.data.map((user) => user.username);
     response = await backendApi.getAllTags()
-    tags.value = response.data
+    tags.value = response.data;
 });
 
-const doNothing = () => {}
-
-watch(searchText, (newText) => {
-    filterQuestions(newText, 'player');
-});
-
-const filterQuestions = (newText, field) => {
-    let result = [];
-    
-    if (newText.length == 0) result = props.questions;
-    else result = props.filteredQuestions.filter((question) => question[field] === newText);
-
-    console.log(result);
-
-    emit('update:filteredQuestions', result);
+async function resetQuestions(){
+    const response = await backendApi.getAllQuestions();
+    filteredTags.value = [];
+    filteredUsers.value = [];
+    searchText.value = [];
+    emit('update:filteredQuestions', response.data);
 }
+
+async function filterQuestions(){
+    console.log("Filter function reached");
+    let result = [];
+    let response = null;
+
+    if (searchText.value.length > 0){
+        result.push({player: searchText.value});
+    }
+    if (filteredUsers.value.length > 0){ 
+        result.push({username: {$in: filteredUsers.value}});
+    }
+    if (filteredTags.value.length > 0){
+        result.push({tags: {$in: filteredTags.value}});
+    }
+
+    if (result.length == 0) resetQuestions();
+    else{
+        response = await backendApi.getFilteredQuestions(result);
+        emit('update:filteredQuestions', response.data);
+    }
+}
+
 </script>
 
 <template>
-    <div class="q-gutter-md row items-start">
+    <div class="q-gutter-md row items-start" style="align-items: center; justify-content: center;;">
         <q-input 
-        style="width: 40%"
+        style="width: 30%"
         outlined 
         v-model="searchText" 
         >
@@ -47,31 +63,27 @@ const filterQuestions = (newText, field) => {
             </template>
         </q-input>
 
-        <q-space />
-        
-        <q-btn-dropdown color="grey-3" text-color="black" size="lg" no-caps label="Users">
-            <q-list>
-                <q-item v-for="user in users" clickable v-close-popup @click="filterQuestions(user.username, 'username')">
-                    {{user.username}}
-                </q-item>
-            </q-list>
-        </q-btn-dropdown>
-
         <q-select
+        label="Users"
+        v-model="filteredUsers"
+        :options="users"
         filled
-        bg-color="grey-3"
-        label="Tags"
-        v-model="model"
-        use-input
         use-chips
         multiple
-        :options="tags"
-        @filter="filterFn"
-        style="width: 250px"
+        style="width: 10%"
         >
-            <template v-slot:append>
-                <q-btn @click="doNothing" color="primary" type="submit"  label="Submit"/>
-            </template>
+        </q-select>
+
+        <q-select
+        label="Tags"
+        v-model="filteredTags"
+        :options="tags"
+        filled
+        bg-color="grey-3"
+        use-chips
+        multiple
+        style="width: 10%"
+        >
         </q-select>
 
         <q-btn-dropdown color="grey-3" text-color="black" size="lg"  no-caps label="Sort By">
@@ -83,5 +95,7 @@ const filterQuestions = (newText, field) => {
                 </q-item>
             </q-list>
         </q-btn-dropdown>
+        <q-btn @click="resetQuestions" label="Reset" color="grey-3" text-color="black"/>
+        <q-btn @click="filterQuestions" label="Submit" type="submit" color="primary"/>
     </div>
 </template>

@@ -36,6 +36,8 @@ export const getAllUsers = () => api.get('/users')
 export const getAllTags = () => api.get('/tags')
 export const getAllSets = () => api.get('/sets')
 
+export const getFilteredQuestions = (filters: Array<object>) => api.post('/filter-questions', filters);
+
 export const getPlayerQuestions = (player: string) => { return api.get(`/player-questions/${player}`) }
 export const getUserQuestions = (user: string) => { return api.get(`/user-questions/{user}?username=${user}`) }
 export const getTagQuestions = (tags: Array<string>) => api.post('/tag-questions', tags)
@@ -55,6 +57,8 @@ const backendApi = {
 
   registerUser,
   loginUser,
+
+  getFilteredQuestions,
 
   getAllQuestions,
   getAllUsers,

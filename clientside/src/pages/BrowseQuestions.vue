@@ -6,7 +6,7 @@
     <div class="q-pa-md">
         <br/>
         
-        <filter-sort-questions v-model:filteredQuestions="filteredQuestions" v-model:questions="questions"/>
+        <filter-sort-questions v-model:filteredQuestions="filteredQuestions"/>
 
         <br/>
 
@@ -49,15 +49,13 @@ import backendApi from 'src/boot/axios.ts'
 import AddQuestionModalVue from '../components/AddQuestionModal.vue';
 import FilterSortQuestions from 'src/components/FilterSortQuestions.vue';
 
-const questions = ref([]); //Array of all questions from backend: must be ref so that child component (filtersortquestions) receives correct value
 const filteredQuestions = ref([]);
 const selectedQuestions = ref([]); //Used when user choosing questions to add to a set
 const visible = ref(false); //used to invoke add form modal
 
 onBeforeMount(async() => {
     let response = await backendApi.getAllQuestions()
-    questions.value = response.data;
-    filteredQuestions.value = questions.value;
+    filteredQuestions.value = response.data;
 });
 
 const columns = [
