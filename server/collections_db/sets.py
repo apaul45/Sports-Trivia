@@ -10,9 +10,10 @@ router = APIRouter(tags=["sets"])
 from server.collections_db.question import Question
 #Field(...) is used to indicate a required field
 class Set(BaseModel):
+    title: str
     position: int
     username: Optional[str] 
-    set: List[Question]
+    questions: List[Question]
     rating: int
 
 import sys

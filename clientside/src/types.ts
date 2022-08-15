@@ -8,9 +8,10 @@ interface Question{
   }
   
   interface Set{
+    title: string
     position: number
     username: string
-    set: Array<Question>
+    questions: Array<Question>
     rating: number
   }
   

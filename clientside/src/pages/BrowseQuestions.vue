@@ -21,9 +21,9 @@
         />
 
         <q-table v-else
-         id="question-table"
-         :rows="filteredQuestions"
-         :columns="columns"
+        id="question-table"
+        :rows="filteredQuestions"
+        :columns="columns"
         />
 
         <q-btn 
