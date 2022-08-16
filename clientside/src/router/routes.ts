@@ -18,6 +18,10 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/questions/add',
     component: () => import('pages/BrowseQuestions.vue'),
+  },
+  {
+    path: '/set',
+    component: () => import('pages/ViewSetPage.vue'),
   }
 ];
 

@@ -49,7 +49,7 @@ async def get_player_user_questions(query_field: str, query_value: str):
 
 #Routes
 
-#Aggregatin route for all filters in front end
+#Aggregation route for all filters in front end
 @router.post("/filter-questions", response_description="Filters by search text, tags, and/or users")
 async def get_filtered_questions(filters: List[object]):
     return await questions_coll.find({"$and": filters}, {'_id': 0}).to_list(length = None)
