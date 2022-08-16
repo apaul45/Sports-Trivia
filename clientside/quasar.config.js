@@ -9,9 +9,9 @@
 // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js
 
 
-const { configure } = require('quasar/wrappers');
+import { configure } from 'quasar/wrappers';
 
-module.exports = configure(function (ctx) {
+export default configure(function (ctx) {
   return {
     // https://v2.quasar.dev/quasar-cli-webpack/supporting-ts
     supportTS: true,

@@ -17,7 +17,7 @@ onBeforeMount(async() => {
     <div class="q-gutter-md row items-start user-lists">
         <h2 class="list-headings">Your Lists</h2>
         <q-separator />
-        <q-btn outline @click="$router.push('/questions/add')">
+        <q-btn outline @click="$router.push('/set')">
             <q-icon name="add" />
         </q-btn>
     </div>
@@ -28,7 +28,6 @@ onBeforeMount(async() => {
                 <div class="text-h6">{{set.title}}</div>
                 <div class="text-subtitle2">{{set.questions.length}} questions</div>
             </q-card-section>
-
         </q-card>
     </div>
 

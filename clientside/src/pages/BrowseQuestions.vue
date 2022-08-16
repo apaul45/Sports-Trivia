@@ -1,7 +1,37 @@
-<template>
+<script setup>
+import { ref, onBeforeMount } from 'vue'
+import { columns } from 'src/table-config.js'
+import backendApi from 'src/boot/axios.ts'
+import AddQuestionModalVue from '../components/AddQuestionModal.vue';
+import FilterSortQuestions from 'src/components/FilterSortQuestions.vue';
+import { useSetStore } from 'src/stores/set-store';
+import { useRouter } from 'vue-router';
 
+const filteredQuestions = ref([]);
+const selectedQuestions = ref([]); //Used when user choosing questions to add to a set
+const visible = ref(false); //used to invoke add form modal
+const router = useRouter();
+
+onBeforeMount(async() => {
+    let response = await backendApi.getAllQuestions()
+    filteredQuestions.value = response.data;
+});
+
+//Store and function below are only used for AddQuestions page 
+const setStore = useSetStore();
+
+function addQuestionsToStore(){
+    setStore.addToSet(selectedQuestions.value);
+    router.push("/set");
+}
+</script>
+
+<template>
     <h1 v-if="this.$route.path !== '/questions/add'" id="questions">Browse Questions</h1>
-    <h1 v-else id="questions">Add Questions</h1>
+    <div v-else>
+        <h1 id="questions">Add Questions</h1>
+        <q-btn color="primary" @click="addQuestionsToStore"> Finish Adding </q-btn>
+    </div>
 
     <div class="q-pa-md">
         <br/>
@@ -42,85 +72,6 @@
         <add-question-modal-vue v-model:visible="visible"/>
     </div>
 </template>
-
-<script setup>
-import { ref, onBeforeMount } from 'vue'
-import backendApi from 'src/boot/axios.ts'
-import AddQuestionModalVue from '../components/AddQuestionModal.vue';
-import FilterSortQuestions from 'src/components/FilterSortQuestions.vue';
-
-const filteredQuestions = ref([]);
-const selectedQuestions = ref([]); //Used when user choosing questions to add to a set
-const visible = ref(false); //used to invoke add form modal
-
-onBeforeMount(async() => {
-    let response = await backendApi.getAllQuestions()
-    filteredQuestions.value = response.data;
-});
-
-const columns = [
-    {
-        name: 'username',
-        required: true,
-        label: 'User',
-        align: 'left',
-        field: (row) => row.username,
-        sortable: true
-    },
-    {
-        name: 'question',
-        required: true,
-        label: 'Question',
-        align: 'left',
-        field: (row) => row.question
-    },
-    {
-        name: 'answer',
-        required: true,
-        label: 'Answer',
-        align: 'left',
-        field: (row) => row.answer
-    },
-    {
-        name: 'difficulty',
-        required: true,
-        label: 'Difficulty',
-        align: 'left',
-        field: (row) => row.difficulty,
-        sortable: true
-    },
-    {
-        name: 'tags',
-        required: true, 
-        label: "Tags",
-        align:'center',
-        field: (row) => createTagCards(row.tags)
-    }
-]
-
-const createTagCards = (tags) => {
-    const style = "display: inline; \
-                   padding: 7px; \
-                   text-color: white; \
-                   border-radius: 25px; \
-                   background-color: #7CCB96; \
-                   text-align: center; \
-                   outline-style: solid;";
-
-    return <div style="overflow: auto; line-height: 3.5;"> 
-                {
-                    tags.map(tag =>
-                    <>
-                        &nbsp;
-                        <div style={style}>{tag}</div>
-                        &nbsp; 
-                    </>
-                    )
-                }
-           </div>
-}
-
-</script>
 
 <style scoped>
     #questions {
