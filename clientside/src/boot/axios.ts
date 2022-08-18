@@ -42,7 +42,7 @@ export const getFilteredQuestions = (filters: Array<object>) => api.post('/filte
 export const getPlayerQuestions = (player: string) => { return api.get(`/player-questions/${player}`) }
 export const getUserQuestions = (user: string) => { return api.get(`/user-questions/{user}?username=${user}`) }
 export const getTagQuestions = (tags: Array<string>) => api.post('/tag-questions', tags)
-export const getUserSets = (user: string) => { return api.get(`/sets/${user}`) }
+export const getUserSets = (user: string) => { return api.get<Set[]>(`/sets/${user}`) }
 export const getUsersRatings = () => { return api.get('/users-ratings') }
 
 const backendApi = {

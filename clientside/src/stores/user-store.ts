@@ -1,19 +1,22 @@
 import { defineStore } from "pinia";
 import backendApi from "src/boot/axios";
+import { Set } from "src/types";
 
 interface State { 
-    user: string
+    user: string,
+    userSets: Array<Set>
 }
 
 const defaultUser = '';
 
 export const useUserStore = defineStore<string, State>('users', {
     state: () => ({
-        user: defaultUser
+        user: defaultUser,
+        userSets: []
     }),
     getters: {},
     actions: {
-        async loginUser(username: string, password: string) {
+        async loginUser(username: string, password: string){
             console.log("reached login user");
             const formData = new FormData();
             formData.append('grant_type', 'password')
@@ -23,6 +26,8 @@ export const useUserStore = defineStore<string, State>('users', {
             console.log(response1);
             backendApi.setHeader(response1.data.access_token);
             this.user = username;
+            const response2 = await backendApi.getUserSets(this.user);
+            this.userSets = response2.data;
         }
     },
 })

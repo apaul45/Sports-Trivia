@@ -1,4 +1,8 @@
 <script setup>
+import { useUserStore } from 'src/stores/user-store';
+
+const userStore = useUserStore();
+
 </script>
 
 <template>
@@ -41,7 +45,22 @@
             </q-btn>
 
             &nbsp;
-            <q-btn class="glossy" round color="primary" icon="card_giftcard" padding="sm" size="20px"  />
+
+            <q-btn 
+            class="glossy" 
+            round 
+            color="primary" 
+            padding="sm" 
+            size="20px">
+                Hi
+                <q-menu cover auto close>
+                    <q-list>
+                        <q-item clickable @click="userStore.loginUser('apaul21', 'testingfromvue')">
+                            <q-item-section>Login</q-item-section>
+                        </q-item>
+                    </q-list>
+                </q-menu>
+            </q-btn>
         </q-bar>
     </div>
     <q-separator color="black" />

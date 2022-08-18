@@ -96,7 +96,7 @@ async def get_user_sets(username: str):
             }
         }
     }
-    return await get_result_docfields(set_coll, [match_stage, group_stage])
+    return await get_result(set_coll, [match_stage])
 
 @router.get("/users-ratings", response_description="Returns a list of users containing their average set rating")
 async def get_users_ratings():

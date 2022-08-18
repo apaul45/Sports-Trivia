@@ -5,40 +5,46 @@ import { onBeforeMount, ref } from 'vue';
 import SetCard from 'src/components/SetCard.vue';
 import { storeToRefs } from 'pinia';
 import { useUserStore } from 'src/stores/user-store';
+import { computed } from '@vue/reactivity';
 
-const { user } = storeToRefs(useUserStore());
+const { user, userSets } = storeToRefs(useUserStore());
 
 const allSets = ref<Array<Set>>([]);
-const userSets = ref<Array<Set>>([]);
 
 onBeforeMount(async() => {
     const response = await backendApi.getAllSets();
-    allSets.value = response.data.filter((set: Set) => set.username !== user.value);
-    userSets.value = response.data.filter((set: Set) => set.username === user.value);
+    allSets.value = response.data;
 });
+
+//Since user is a state variable (meaning it's a ref which is reactive), allSets will filter whenever it changes
+//Use user state var along with the computed properly to dynamically update the cards shown under "All Lists"
+const sets = computed(() => allSets.value.filter((set) => set.username !== user.value));
+
 </script>
 
 <template>
     <h1 id="questions">Welcome Back!</h1>
 
-    <div class="q-gutter-md row items-start lists">
-        <h2 class="list-headings">Your Lists</h2>
-        <q-separator />
-        <q-btn outline @click="$router.push('/set')">
-            <q-icon name="add" />
-        </q-btn>
+    <div v-if="user.length > 0">
+        <div class="q-gutter-md row items-start lists">
+            <h2 class="list-headings">Your Lists</h2>
+            <q-separator />
+            <q-btn outline @click="$router.push('/set')">
+                <q-icon name="add" />
+            </q-btn>
+        </div>
+
+        <set-card v-model:sets="userSets" />
+
+        <br/><br/>
     </div>
 
-    <set-card v-model:sets="userSets" />
-
-    <br/><br/>
-
     <div class="q-gutter-md row items-start lists">
-        <h2 class="list-headings">Lists Similar to Yours</h2>
+        <h2 class="list-headings">All Lists</h2>
         <q-separator />
     </div>
 
-    <set-card v-model:sets="allSets" />
+    <set-card v-model:sets="sets" />
 </template>
 
 <style scoped>

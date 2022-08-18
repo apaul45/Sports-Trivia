@@ -6,7 +6,6 @@ import AddQuestionModalVue from '../components/AddQuestionModal.vue';
 import FilterSortQuestions from 'src/components/FilterSortQuestions.vue';
 import { useSetStore } from 'src/stores/set-store';
 import { useRouter } from 'vue-router';
-import { useUserStore } from 'src/stores/user-store';
 
 const filteredQuestions = ref([]);
 const selectedQuestions = ref([]); //Used when user choosing questions to add to a set
