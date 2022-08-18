@@ -1,16 +1,17 @@
 <script setup>
+import backendApi from 'src/boot/axios';
+import { useUserStore } from 'src/stores/user-store';
 import {ref} from 'vue';
-import backendApi from '../boot/axios'
 
-const props = defineProps({visible: Boolean});
-const emit = defineEmits(['update: visible']); //Used to trigger an event to parent component
+const props = defineProps({visible: Boolean, filteredQuestions: Array});
+const emit = defineEmits(['update:visible', 'update:filteredQuestions']); //Used to trigger an event to parent component
 
 const defaultQuestion = {
     question: "", 
     answer: "", 
     difficulty: "", 
     tags: [],
-    username: "", 
+    username: "apaul21", 
     player: ""
 }
 
@@ -19,11 +20,12 @@ const inputFields = ["question", "answer", "player"]; //Use to reduce duplicate 
 const question = ref(defaultQuestion);
 
 async function addQuestion(){
-    question.value.username = "apaul21";
-    const response = await backendApi.createQuestion(question.value);
-    console.log(response);
-    question = defaultQuestion;
+    await useUserStore().loginUser('apaul21', 'testingfromvue');
+    await backendApi.createQuestion(question.value);
+    question.value = defaultQuestion;
     emit('update:visible', false);
+    const response = await backendApi.getAllQuestions();
+    emit('update:filteredQuestions', response.data);
 }   
 </script>
 

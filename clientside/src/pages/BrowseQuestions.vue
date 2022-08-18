@@ -6,6 +6,7 @@ import AddQuestionModalVue from '../components/AddQuestionModal.vue';
 import FilterSortQuestions from 'src/components/FilterSortQuestions.vue';
 import { useSetStore } from 'src/stores/set-store';
 import { useRouter } from 'vue-router';
+import { useUserStore } from 'src/stores/user-store';
 
 const filteredQuestions = ref([]);
 const selectedQuestions = ref([]); //Used when user choosing questions to add to a set
@@ -20,7 +21,7 @@ onBeforeMount(async() => {
 //Store and function below are only used for AddQuestions page 
 const setStore = useSetStore();
 
-function addQuestionsToStore(){
+function addSetToStore(){
     setStore.addToSet(selectedQuestions.value);
     router.push("/set");
 }
@@ -30,7 +31,7 @@ function addQuestionsToStore(){
     <h1 v-if="this.$route.path !== '/questions/add'" id="questions">Browse Questions</h1>
     <div v-else>
         <h1 id="questions">Add Questions</h1>
-        <q-btn color="primary" @click="addQuestionsToStore"> Finish Adding </q-btn>
+        <q-btn color="primary" @click="addSetToStore"> Finish Adding </q-btn>
     </div>
 
     <div class="q-pa-md">
@@ -69,7 +70,7 @@ function addQuestionsToStore(){
         In other words, it can be used to sync a prop with a ref variable
         https://vuejs.org/guide/components/events.html#usage-with-v-model
         -->
-        <add-question-modal-vue v-model:visible="visible"/>
+        <add-question-modal-vue v-model:visible="visible" v-model:filteredQuestions="filteredQuestions"/>
     </div>
 </template>
 
