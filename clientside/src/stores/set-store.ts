@@ -8,7 +8,7 @@ interface State{
 
 const defaultSet: Set = {
     title: '', 
-    position: 0, 
+    position: 0,
     username: 'apaul45', 
     questions: [], 
     rating: 0
@@ -20,9 +20,13 @@ export const useSetStore = defineStore<string, State>('sets', {
       }),
       getters: {},
       actions: {
+        setDefault(){
+            this.setBeingAdded.questions = [];
+            this.setBeingAdded.title = '';
+            this.setBeingAdded.rating = 0;
+        },
         addToSet(questions: Array<Question>){
             this.setBeingAdded.questions.push(...questions);
-            this.setBeingAdded = defaultSet;
         },
         deleteFromSet(questions: Array<Question>){
             this.setBeingAdded.questions = this.setBeingAdded.questions.filter((question: Question) => questions.indexOf(question) == -1);
@@ -31,9 +35,9 @@ export const useSetStore = defineStore<string, State>('sets', {
             this.setBeingAdded[field] = value;
         },
         async saveToDb(){
+            const response = await backendApi.getNumberOfSets();
+            this.setBeingAdded.position = response.data;
             await backendApi.createSet(this.setBeingAdded);
-            this.setBeingAdded = defaultSet;
-            console.log(this.setBeingAdded);
         }
       },
 });

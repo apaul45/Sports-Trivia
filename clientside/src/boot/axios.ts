@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios'
+import axios, { AxiosInstance, AxiosResponse } from 'axios'
 import { Question, Set, User } from '../types'
 
 declare module '@vue/runtime-core' {
@@ -34,7 +34,8 @@ export const loginUser = (form: FormData) => { return api.post('/login', form) }
 export const getAllQuestions = () => api.get('/questions')
 export const getAllUsers = () => api.get('/users')
 export const getAllTags = () => api.get('/tags')
-export const getAllSets = () => api.get('/sets')
+export const getAllSets = () => api.get<Set[]>('/sets')
+export const getNumberOfSets = () => api.get<number>('/set-count')
 
 export const getFilteredQuestions = (filters: Array<object>) => api.post('/filter-questions', filters);
 
@@ -64,6 +65,7 @@ const backendApi = {
   getAllUsers,
   getAllTags,
   getAllSets,
+  getNumberOfSets,
   getPlayerQuestions,
   getUserQuestions,
   getTagQuestions,

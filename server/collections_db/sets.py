@@ -1,3 +1,4 @@
+from tokenize import Number
 from typing import List, Optional
 from pydantic import BaseModel
 from bson.objectid import ObjectId
@@ -27,6 +28,10 @@ from collections_db.users import get_current_user
 async def get_all_sets()->List[Set]:
     sets = await set_coll.find({},{'_id': 0}).to_list(length=None)
     return sets
+
+@router.get("/set-count")
+async def get_number_of_sets():
+    return await set_coll.count_documents({})
 
 #Token Required Functions: via dependency on oauth2 password bearer through get_current_user function
 @router.post("/set", response_model=Set)
