@@ -18,7 +18,7 @@ interface Question{
   interface User{
     username: string
     password: string
-    passwordConfirmed?: string
+    password_confirmed?: string
   }
   
   interface AggregateQuestions{

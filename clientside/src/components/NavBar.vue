@@ -1,7 +1,9 @@
 <script setup>
+import { storeToRefs } from 'pinia';
 import { useUserStore } from 'src/stores/user-store';
+import LoginRegisterForm from './LoginRegisterForm.vue';
 
-const userStore = useUserStore();
+const { user } = storeToRefs(useUserStore());
 
 </script>
 
@@ -52,12 +54,14 @@ const userStore = useUserStore();
             color="primary" 
             padding="sm" 
             size="20px">
-                Hi
-                <q-menu cover auto close>
+
+                <q-icon v-if="user.length > 0" name="person" />
+                <q-icon v-else name="no_accounts" />
+
+                <q-menu style="width: 20%">
                     <q-list>
-                        <q-item clickable @click="userStore.loginUser('apaul21', 'testingfromvue')">
-                            <q-item-section>Login</q-item-section>
-                        </q-item>
+                        <login-register-form />
+                        <login-register-form registerUser="true" />
                     </q-list>
                 </q-menu>
             </q-btn>

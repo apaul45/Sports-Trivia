@@ -6,22 +6,22 @@ import AddQuestionModalVue from '../components/AddQuestionModal.vue';
 import FilterSortQuestions from 'src/components/FilterSortQuestions.vue';
 import { useSetStore } from 'src/stores/set-store';
 import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
+import { useUserStore } from 'src/stores/user-store';
 
 const filteredQuestions = ref([]);
 const selectedQuestions = ref([]); //Used when user choosing questions to add to a set
 const visible = ref(false); //used to invoke add form modal
 const router = useRouter();
+const { user } = storeToRefs(useUserStore());
 
 onBeforeMount(async() => {
     let response = await backendApi.getAllQuestions()
     filteredQuestions.value = response.data;
 });
 
-//Store and function below are only used for AddQuestions page 
-const setStore = useSetStore();
-
 function addSetToStore(){
-    setStore.addToSet(selectedQuestions.value);
+    useSetStore().addToSet(selectedQuestions.value);
     router.push("/set");
 }
 </script>
@@ -57,6 +57,7 @@ function addSetToStore(){
         />
 
         <q-btn 
+        v-if="user.length>0"
         @click="visible = true" 
         label="Add a Question" 
         no-caps color="primary"

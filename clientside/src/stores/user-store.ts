@@ -28,6 +28,10 @@ export const useUserStore = defineStore<string, State>('users', {
             this.user = username;
             const response2 = await backendApi.getUserSets(this.user);
             this.userSets = response2.data;
+        },
+        async registerUser(username: string, password: string, password_confirmed: string){
+            const response = await backendApi.registerUser({username, password, password_confirmed});
+            return response;
         }
     },
 })

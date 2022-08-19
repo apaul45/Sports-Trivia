@@ -36,12 +36,12 @@ const openSetPage = (set: Set) => {
                         </div>
                         {{set.questions.length}} questions
                         <br/>
-                        {{set.rating}} <q-icon name="star" />
+                        {{set.rating}}<q-icon name="star" />
                     </div>
 
                     <div v-if="set.username === user" class="col-auto">
                         <q-btn color="grey-7" round flat icon="more_vert">
-                            <q-menu cover auto-close>
+                            <q-menu auto-close>
                                 <q-list>
                                     <q-item clickable>
                                         <q-item-section>Edit Set</q-item-section>

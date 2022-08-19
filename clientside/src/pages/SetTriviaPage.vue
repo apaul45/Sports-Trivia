@@ -28,12 +28,12 @@ const determineResults = () => {
         <h1 id="set-name"> {{setBeingViewed.title}} </h1>
 
         <div class="q-gutter-md row items-start center-items">
-            <h4 class="set-metadata">
+            <h4 style="padding-right: 3%;">
                 {{setBeingViewed.username}} 
-                ({{setBeingViewed.rating}} <q-icon name="star"/>)
+                ({{setBeingViewed.rating}}<q-icon name="star"/>)
             </h4>
 
-            <h4 class="set-metadata">{{setBeingViewed.questions.length}} questions</h4>
+            <h4 style="padding-left: 3%;">{{setBeingViewed.questions.length}} questions</h4>
         </div>
 
         <div v-for="(question, index) in setBeingViewed.questions">
