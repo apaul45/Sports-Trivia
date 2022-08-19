@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { useSetStore } from 'src/stores/set-store';
 import { useUserStore } from 'src/stores/user-store';
 import { Set } from 'src/types';
+import { useRouter } from 'vue-router';
 
 interface Props{
     sets: Set[]
@@ -9,13 +11,22 @@ interface Props{
 
 const props = defineProps<Props>();
 
+const setStore = useSetStore();
+
 const userStore = useUserStore()
 const { user } = storeToRefs(userStore)
+
+const router = useRouter();
+
+const openSetPage = (set: Set) => {
+    setStore.updateSetBeingViewed(set);
+    router.push(`/set-page/${set.position}`);
+}
 </script>
 
 <template>
     <div class="q-pa-md row items-start q-gutter-md cards">
-        <q-card v-for="set in props.sets" class="my-card" clickable>
+        <q-card v-for="set in props.sets" class="my-card" clickable @click="openSetPage(set)">
             <q-card-section>
                 <div class="row items-center no-wrap">
                     <div class="col">
@@ -25,7 +36,7 @@ const { user } = storeToRefs(userStore)
                         </div>
                         {{set.questions.length}} questions
                         <br/>
-                        {{set.rating}} stars <q-icon name="star" />
+                        {{set.rating}} <q-icon name="star" />
                     </div>
 
                     <div v-if="set.username === user" class="col-auto">

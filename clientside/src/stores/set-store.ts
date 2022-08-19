@@ -3,7 +3,8 @@ import { Question, Set } from "src/types";
 import backendApi from "src/boot/axios";
 
 interface State{
-    setBeingAdded: Set
+    setBeingAdded: Set,
+    setBeingViewed: Set
 }
 
 const defaultSet: Set = {
@@ -17,6 +18,7 @@ const defaultSet: Set = {
 export const useSetStore = defineStore<string, State>('sets', {  
      state: () => ({
         setBeingAdded: defaultSet,
+        setBeingViewed: defaultSet
       }),
       getters: {},
       actions: {
@@ -33,6 +35,9 @@ export const useSetStore = defineStore<string, State>('sets', {
         },
         updateSet(value: never, field: keyof Set){
             this.setBeingAdded[field] = value;
+        },
+        updateSetBeingViewed(set: Set){
+            this.setBeingViewed = set;
         },
         async saveToDb(){
             const response = await backendApi.getNumberOfSets();
