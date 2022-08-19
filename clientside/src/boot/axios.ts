@@ -69,7 +69,6 @@ const backendApi = {
   getPlayerQuestions,
   getUserQuestions,
   getTagQuestions,
-  getUserSets,
   getUsersRatings
 }
 

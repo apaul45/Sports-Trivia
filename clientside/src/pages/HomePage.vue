@@ -7,7 +7,7 @@ import { storeToRefs } from 'pinia';
 import { useUserStore } from 'src/stores/user-store';
 import { computed } from '@vue/reactivity';
 
-const { user, userSets } = storeToRefs(useUserStore());
+const { user } = storeToRefs(useUserStore());
 
 const allSets = ref<Array<Set>>([]);
 
@@ -18,7 +18,8 @@ onBeforeMount(async() => {
 
 //Since user is a state variable (meaning it's a ref which is reactive), allSets will filter whenever it changes
 //Use user state var along with the computed properly to dynamically update the cards shown under "All Lists"
-const sets = computed(() => allSets.value.filter((set) => set.username !== user.value));
+const userSets = computed(() => allSets.value.filter((set) => set.username === user.value));
+const allSetsComputed = computed(() => allSets.value.filter((set) => set.username !== user.value));
 
 </script>
 
@@ -44,7 +45,7 @@ const sets = computed(() => allSets.value.filter((set) => set.username !== user.
         <q-separator />
     </div>
 
-    <set-card v-model:sets="sets" />
+    <set-card v-model:sets="allSetsComputed" />
 </template>
 
 <style scoped>

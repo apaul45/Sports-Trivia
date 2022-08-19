@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { Question, Set } from "src/types";
 import backendApi from "src/boot/axios";
+import { useUserStore } from "./user-store";
 
 interface State{
     setBeingAdded: Set,

@@ -16,7 +16,6 @@ const router = useRouter();
 const questionsToDelete = ref([]);
 
 async function saveSet(){
-    await userStore.loginUser('apaul21', 'testingfromvue');
     await setStore.saveToDb();
     setStore.setDefault();
     router.push('/home');

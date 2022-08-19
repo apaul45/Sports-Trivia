@@ -54,17 +54,20 @@ const { user } = storeToRefs(useUserStore());
             color="primary" 
             padding="sm" 
             size="20px">
-
                 <q-icon v-if="user.length > 0" name="person" />
                 <q-icon v-else name="no_accounts" />
 
                 <q-menu style="width: 20%">
-                    <q-list>
+                    <q-list v-if="user.length <= 0">
                         <login-register-form />
                         <login-register-form registerUser="true" />
                     </q-list>
+                    <q-item v-else clickable @click="useUserStore().logout()">
+                       <q-item-section> Logout </q-item-section>
+                    </q-item>
                 </q-menu>
             </q-btn>
+            
         </q-bar>
     </div>
     <q-separator color="black" />
