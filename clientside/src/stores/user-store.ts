@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import backendApi from "src/boot/axios";
-import { Set } from "src/types";
 
 interface State { 
     user: string

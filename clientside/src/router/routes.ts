@@ -22,6 +22,10 @@ const routes: RouteRecordRaw[] = [
     component: () => import('pages/ViewSetPage.vue'),
   },
   {
+    path: '/set/edit:id',
+    component: () => import('pages/ViewSetPage.vue')
+  },
+  {
     path: '/set-page/:id',
     component: () => import('pages/SetTriviaPage.vue'),
   }

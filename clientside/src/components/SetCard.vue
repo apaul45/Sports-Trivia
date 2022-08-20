@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import backendApi from 'src/boot/axios';
 import { useSetStore } from 'src/stores/set-store';
 import { useUserStore } from 'src/stores/user-store';
 import { Set } from 'src/types';
@@ -10,6 +11,7 @@ interface Props{
 }
 
 const props = defineProps<Props>();
+const emit = defineEmits(['update:sets']); 
 
 const setStore = useSetStore();
 
@@ -20,7 +22,18 @@ const router = useRouter();
 
 const openSetPage = (set: Set) => {
     setStore.updateSetBeingViewed(set);
-    router.push(`/set-page/${set.position}`);
+    router.push(`/set-page/${set._id}`);
+}
+
+//For user sets only
+
+const editSet = (setToUpdate: Set) => {
+    setStore.updateSetBeingAdded(setToUpdate);
+    router.push(`/set/edit${setToUpdate._id}`);
+}
+const deleteSet = async(setToDelete: Set) => {
+    const response = await backendApi.deleteSet(setToDelete._id);
+    emit('update:sets', setToDelete._id);
 }
 </script>
 
@@ -40,13 +53,13 @@ const openSetPage = (set: Set) => {
                     </div>
 
                     <div v-if="set.username === user" class="col-auto">
-                        <q-btn color="grey-7" round flat icon="more_vert">
+                        <q-btn @click.stop color="grey-7" round flat icon="more_vert">
                             <q-menu auto-close>
                                 <q-list>
-                                    <q-item clickable>
+                                    <q-item clickable @click="editSet(set)">
                                         <q-item-section>Edit Set</q-item-section>
                                     </q-item>
-                                    <q-item clickable>
+                                    <q-item clickable @click="deleteSet(set)">
                                         <q-item-section>Delete Set</q-item-section>
                                     </q-item>
                                 </q-list>

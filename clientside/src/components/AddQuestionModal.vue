@@ -1,6 +1,5 @@
 <script setup>
 import backendApi from 'src/boot/axios';
-import { useUserStore } from 'src/stores/user-store';
 import {ref} from 'vue';
 
 const props = defineProps({visible: Boolean, filteredQuestions: Array});
@@ -11,7 +10,7 @@ const defaultQuestion = {
     answer: "", 
     difficulty: "", 
     tags: [],
-    username: "apaul21", 
+    username: "", 
     player: ""
 }
 
@@ -20,7 +19,6 @@ const inputFields = ["question", "answer", "player"]; //Use to reduce duplicate 
 const question = ref(defaultQuestion);
 
 async function addQuestion(){
-    await useUserStore().loginUser('apaul21', 'testingfromvue');
     await backendApi.createQuestion(question.value);
     question.value = defaultQuestion;
     emit('update:visible', false);

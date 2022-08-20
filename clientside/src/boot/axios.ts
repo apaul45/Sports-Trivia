@@ -23,8 +23,8 @@ export const deleteQuestion = (question: string) => api.delete(`/question/${ques
 export const updateQuestion = (question: string, payload: unknown) => api.put(`/question/${question}`, payload)
 
 export const createSet = (payload: Set) => api.post('/set', payload)
-export const deleteSet = (id: number) => api.delete(`/set/${id}`)
-export const updateSet = (id: number, payload: unknown) => api.put(`/set/${id}`, payload)
+export const deleteSet = (id: any) => api.delete(`/set/${id}`)
+export const updateSet = (id: any, payload: Set) => api.put(`/set/${id}`, payload)
 
 export const registerUser = (payload: User) => api.post('/register', payload)
 export const loginUser = (form: FormData) => { return api.post('/login', form) }

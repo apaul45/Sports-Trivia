@@ -22,7 +22,7 @@ onBeforeMount(async() => {
 
 function addSetToStore(){
     useSetStore().addToSet(selectedQuestions.value);
-    router.push("/set");
+    router.go(-1);
 }
 </script>
 

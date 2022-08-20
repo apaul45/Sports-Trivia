@@ -1,7 +1,6 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 import { useSetStore } from 'src/stores/set-store';
-import { useUserStore } from 'src/stores/user-store';
 import { columns } from 'src/table-config.js';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -9,14 +8,14 @@ import { useRouter } from 'vue-router';
 const setStore = useSetStore();
 const { setBeingAdded } = storeToRefs(setStore);
 
-const userStore = useUserStore();
-
 const router = useRouter();
 
 const questionsToDelete = ref([]);
 
 async function saveSet(){
-    await setStore.saveToDb();
+    //If not default set, then that means view set page is open for editing existing set
+    const route = router.currentRoute.value.path;
+    await setStore.saveToDb(route === '/set' ? 'POST' : 'PUT');
     setStore.setDefault();
     router.push('/home');
 }
@@ -31,7 +30,7 @@ async function saveSet(){
     label="Set Name"
     bg-color="grey-4"
     class="set-name center-input"
-    @blur="() => setStore.updateSet(setBeingAdded.title, 'title')"
+    @blur="() => setStore.updateSetField(setBeingAdded.title, 'title')"
     />
 
     <div class="q-pa-md">

@@ -8,8 +8,8 @@ interface Question{
   }
   
   interface Set{
+    _id?: string,
     title: string
-    position: number
     username: string
     questions: Array<Question>
     rating: number

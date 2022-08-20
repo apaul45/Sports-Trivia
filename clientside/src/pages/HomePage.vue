@@ -18,8 +18,15 @@ onBeforeMount(async() => {
 
 //Since user is a state variable (meaning it's a ref which is reactive), allSets will filter whenever it changes
 //Use user state var along with the computed properly to dynamically update the cards shown under "All Lists"
-const userSets = computed(() => allSets.value.filter((set) => set.username === user.value));
+//Can think of it as a variable that has a dependency on a reactive ref
 const allSetsComputed = computed(() => allSets.value.filter((set) => set.username !== user.value));
+
+//Can use a getter and setter on a computed value to allow for a delete callback to update allSets, which then
+//causes the getter to return an updated view of the users sets
+const userSets = computed({
+    get() {return allSets.value.filter((set) => set.username === user.value)},
+    set(set_id: number){allSets.value = allSets.value.filter((set:Set) => set._id !== set_id)}
+});
 
 </script>
 
