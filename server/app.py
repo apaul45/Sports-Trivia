@@ -3,7 +3,7 @@ import motor.motor_asyncio
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-database = motor.motor_asyncio.AsyncIOMotorClient("mongodb://localhost:27017").st
+database = motor.motor_asyncio.AsyncIOMotorClient("mongodb+srv://apaul45:password123apaul@cluster0.qr58u.mongodb.net/?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE").st
 questions_coll = database.get_collection("questions")
 set_coll = database.get_collection("sets")
 users_coll = database.get_collection("users")
