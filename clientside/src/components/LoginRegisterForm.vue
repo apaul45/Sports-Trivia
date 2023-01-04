@@ -8,19 +8,19 @@ const username = ref<string>('');
 const password = ref<string>('');
 const passwordConfirmed = ref<string>('');
 
+const inputCondition = (val: string) => val && val.length > 0 || 'Please provide a value';
 
 const registerLogin = async() => {
     if (props.registerUser){
         const response = await useUserStore().registerUser(username.value, password.value, passwordConfirmed.value);
-        if (response.status == 200) await useUserStore().loginUser(username.value, password.value);
+        if (response.status !== 200) return; //TODO: Need error handling here 
     }
-    else await useUserStore().loginUser(username.value, password.value);
+    await useUserStore().loginUser(username.value, password.value);
 
     username.value = ' ';
     password.value = ' ';
     passwordConfirmed.value = ' ';
 }
-
 </script>
 
 <template>
@@ -36,7 +36,7 @@ const registerLogin = async() => {
             style="width: 97%;"
             v-model="username"
             lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please provide a value']"
+            :rules="[inputCondition]"
             label-slot clearable
             />
 
@@ -46,7 +46,7 @@ const registerLogin = async() => {
             style="width: 97%;"
             v-model="password"
             lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please provide a value']"
+            :rules="[inputCondition]"
             label-slot clearable
             />
 
@@ -57,12 +57,17 @@ const registerLogin = async() => {
                 style="width: 97%;"
                 v-model="passwordConfirmed"
                 lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please provide a value']"
+                :rules="[inputCondition]"
                 label-slot clearable
                 />
             </div>
 
-            <q-btn @click="registerLogin" type="submit" label="Submit" color="primary"/>
+            <q-btn 
+            @click="registerLogin" 
+            type="submit" 
+            label="Submit" 
+            color="primary"
+            />
        </q-form>
     </q-expansion-item>
 </template>

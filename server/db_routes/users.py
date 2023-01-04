@@ -58,14 +58,15 @@ async def register_user(user: RegisterUser):
 @router.post("/login", response_model=Token)
 async def login_user(form_data: OAuth2PasswordRequestForm = Depends()):
     user = await users_coll.find_one({"username": form_data.username})
+    
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect username")
-    elif not pwd_context.verify(form_data.password, user["password"]):
+    if not pwd_context.verify(form_data.password, user["password"]):
         raise HTTPException(status_code=400, detail="Incorrect password")
-    else:
-        #Create and send a JWT for the user to use for authorization
-        token = jwt.encode({"user": user["username"]}, secret_key, algorithm= algorithm)
-        return {"access_token": token}
+
+    #Create and send a JWT for the user to use for authorization
+    token = jwt.encode({"user": user["username"]}, secret_key, algorithm= algorithm)
+    return {"access_token": token}
 
 @router.get("/users")
 async def get_all_users():

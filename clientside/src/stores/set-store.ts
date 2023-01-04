@@ -3,7 +3,7 @@ import { Question, Set } from "src/types";
 import backendApi from "src/boot/axios";
 import { useUserStore } from "./user-store";
 
-interface State{
+interface State {
     setBeingAdded: Set,
     setBeingViewed: Set
 }
@@ -23,37 +23,36 @@ export const useSetStore = defineStore<string, State>('sets', {
       }),
       getters: {},
       actions: {
-        setDefault(){
+        setDefault() {
             this.setBeingAdded.questions = [];
             this.setBeingAdded.title = '';
             this.setBeingAdded.rating = 0;
         },
-        updateSetBeingAdded(set: Set){
+        updateSetBeingAdded(set: Set) {
             this.setBeingAdded = set;
         },
-        updateSetBeingViewed(set: Set){
+        updateSetBeingViewed(set: Set) {
             this.setBeingViewed = set;
         },
-        addToSet(questions: Array<Question>){
+        addToSet(questions: Array<Question>) {
             this.setBeingAdded.questions.push(...questions);
         },
-        deleteFromSet(questions: Array<Question>){
-            this.setBeingAdded.questions = this.setBeingAdded.questions.filter((question: Question) => questions.indexOf(question) == -1);
+        deleteFromSet(questions: Array<Question>) {
+            this.setBeingAdded.questions = this.setBeingAdded.questions.filter((question) => questions.indexOf(question) == -1);
         },
-        updateSetField(value: never, field: keyof Set){
+        updateSetField(value: never, field: keyof Set) {
             this.setBeingAdded[field] = value;
         },
-        async saveToDb(method: string){
+        async saveToDb(method: string) {
+            //TODO: Add error handling
             if (method === 'POST'){
-                const response = await backendApi.getNumberOfSets();
-                delete this.setBeingAdded._id;
+                await backendApi.getNumberOfSets();
                 await backendApi.createSet(this.setBeingAdded);
+                return;
             }
-            else{
-                let id = this.setBeingAdded._id;
-                delete this.setBeingAdded._id;
-                await backendApi.updateSet(id, this.setBeingAdded);
-            }
+            let id = this.setBeingAdded._id;
+            delete this.setBeingAdded._id;
+            await backendApi.updateSet(id, this.setBeingAdded);
         }
       },
 });

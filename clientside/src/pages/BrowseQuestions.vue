@@ -27,7 +27,9 @@ function addSetToStore(){
 </script>
 
 <template>
-    <h1 v-if="this.$route.path !== '/questions/add'" id="questions">Browse Questions</h1>
+    <h1 v-if="this.$route.path !== '/questions/add'" id="questions">
+        Browse Questions
+    </h1>
     <div v-else>
         <h1 id="questions">Add Questions</h1>
         <q-btn color="primary" @click="addSetToStore"> Finish Adding </q-btn>
@@ -36,7 +38,9 @@ function addSetToStore(){
     <div class="q-pa-md">
         <br/>
         
-        <filter-sort-questions v-model:filteredQuestions="filteredQuestions"/>
+        <filter-sort-questions 
+        v-model:filteredQuestions="filteredQuestions"
+        />
 
         <br/>
 
