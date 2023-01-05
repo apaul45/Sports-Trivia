@@ -13,7 +13,7 @@ router = APIRouter(tags=["questions"])
 
 #Field(...) is used to indicate a required field
 class Question(BaseModel):
-    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    id: Optional[PyObjectId] = Field(default_factory=PyObjectId, alias="_id")
     question: str = Field(...)
     answer: str = Field(...)
     difficulty: str = Field(...)
