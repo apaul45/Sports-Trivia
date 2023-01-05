@@ -28,9 +28,7 @@ async function resetQuestions(){
 }
 
 async function filterQuestions(){
-    console.log("Filter function reached");
     let result = [];
-    let response = null;
 
     if (searchText.value.length > 0){
         result.push({player: searchText.value});
@@ -42,11 +40,13 @@ async function filterQuestions(){
         result.push({tags: {$in: filteredTags.value}});
     }
 
-    if (result.length == 0) resetQuestions();
-    else{
-        response = await backendApi.getFilteredQuestions(result);
-        emit('update:filteredQuestions', response.data);
+    if (result.length == 0) {
+        resetQuestions();
+        return;
     }
+
+    const response = await backendApi.getFilteredQuestions(result);
+    emit('update:filteredQuestions', response.data);
 }
 
 </script>

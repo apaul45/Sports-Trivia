@@ -27,6 +27,9 @@ interface Question{
   }
   
   export {
-    Question, Set, User, AggregateQuestions
+    Question, 
+    Set, 
+    User, 
+    AggregateQuestions
   }
   

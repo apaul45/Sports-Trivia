@@ -28,14 +28,13 @@ export const updateSet = (id: any, payload: Set) => api.put(`/set/${id}`, payloa
 
 export const registerUser = (payload: User) => api.post('/register', payload)
 export const loginUser = (form: FormData) => { return api.post('/login', form) }
-// export const logout = () => api.put(`/logout`);
 
 // Query Routes
 export const getAllQuestions = () => api.get('/questions')
 export const getAllUsers = () => api.get('/users')
 export const getAllTags = () => api.get('/tags')
 export const getAllSets = () => api.get<Set[]>('/sets')
-export const getNumberOfSets = () => api.get<number>('/set-count')
+export const getNumberOfSets = () => api.get<number>(`/sets?is_count=${true}`)
 
 export const getFilteredQuestions = (filters: Array<object>) => api.post('/filter-questions', filters);
 

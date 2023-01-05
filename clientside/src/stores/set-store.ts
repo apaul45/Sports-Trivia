@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { Question, Set } from "src/types";
 import backendApi from "src/boot/axios";
-import { useUserStore } from "./user-store";
 
 interface State {
     setBeingAdded: Set,
@@ -10,7 +9,6 @@ interface State {
 
 const defaultSet: Set = {
     title: '', 
-    _id: '',
     username: 'apaul45', 
     questions: [], 
     rating: 0
@@ -46,13 +44,11 @@ export const useSetStore = defineStore<string, State>('sets', {
         async saveToDb(method: string) {
             //TODO: Add error handling
             if (method === 'POST'){
-                await backendApi.getNumberOfSets();
                 await backendApi.createSet(this.setBeingAdded);
                 return;
             }
-            let id = this.setBeingAdded._id;
-            delete this.setBeingAdded._id;
-            await backendApi.updateSet(id, this.setBeingAdded);
+            
+            await backendApi.updateSet(this.setBeingAdded._id, this.setBeingAdded);
         }
       },
 });

@@ -46,7 +46,8 @@ function addSetToStore(){
 
         <!-- Make sure to correctly configure the row key to be unique 
         so all rows aren't selected when one row is selected -->
-        <q-table v-if="this.$route.path === '/questions/add'"
+        <q-table 
+        v-if="this.$route.path === '/questions/add'"
         :rows="filteredQuestions"
         :columns="columns"
         row-key="question"
@@ -74,7 +75,10 @@ function addSetToStore(){
         In other words, it can be used to sync a prop with a ref variable
         https://vuejs.org/guide/components/events.html#usage-with-v-model
         -->
-        <add-question-modal-vue v-model:visible="visible" v-model:filteredQuestions="filteredQuestions"/>
+        <add-question-modal-vue 
+        v-model:visible="visible" 
+        v-model:filteredQuestions="filteredQuestions"
+        />
     </div>
 </template>
 

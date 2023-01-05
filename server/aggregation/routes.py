@@ -7,7 +7,7 @@ from aggregation.helpers import get_player_user_questions
 router = APIRouter(tags=["aggregation"])
 
 #Aggregation route for all filters in front end
-@router.post("/filter-questions", response_description="Filters by search text, tags, and/or users")
+@router.post("/filter-questions", response_description="Filters by search text, tags, and/or users. Accepts mongodb expressions only.")
 async def get_filtered_questions(filters: List[object]):
     questions = questions_coll.find({"$and": filters})
     return await questions.to_list(length = None)
@@ -56,8 +56,8 @@ async def get_user_sets(username: str):
         }
     }
 
-    sets = await set_coll.aggregate([match_stage])
-    return sets.to_list(length=None)
+    sets = await set_coll.aggregate([match_stage]).to_list(length=None)
+    return sets
 
 @router.get("/users-ratings", response_description="Returns a list of users containing their average set rating")
 async def get_users_ratings():
@@ -73,6 +73,6 @@ async def get_users_ratings():
         }
     }
 
-    sets = await set_coll.aggregate([group_stage])
-    return sets.to_list(length=None)
+    sets = await set_coll.aggregate([group_stage]).to_list(length=None)
+    return sets
 
