@@ -11,7 +11,7 @@ from db_routes.users import get_current_user
 router = APIRouter(tags=["sets"])
 
 class Set(BaseModel):
-    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    id: Optional[PyObjectId] = Field(default_factory=PyObjectId, alias="_id")
     title: str
     username: Optional[str] 
     questions: List[Question]
@@ -35,7 +35,7 @@ async def get_all_sets(is_count: Optional[bool] = False):
 
 #Token Required Functions: via dependency on oauth2 password bearer through get_current_user function
 @router.post("/set", response_model=Set)
-async def create_set(newSet: Set = Body(...), user = Depends(get_current_user))->Set:
+async def create_set(newSet: Set = Body(...), user = Depends(get_current_user)) -> Set:
     newSet.username = user["username"]
     newSet = jsonable_encoder(newSet)
 

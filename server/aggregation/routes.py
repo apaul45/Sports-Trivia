@@ -9,8 +9,8 @@ router = APIRouter(tags=["aggregation"])
 #Aggregation route for all filters in front end
 @router.post("/filter-questions", response_description="Filters by search text, tags, and/or users")
 async def get_filtered_questions(filters: List[object]):
-    questions = await questions_coll.find({"$and": filters})
-    return questions.to_list(length = None)
+    questions = questions_coll.find({"$and": filters})
+    return await questions.to_list(length = None)
 
 #Aggregation Routes for Questions
 @router.get("/player-questions/{player}", response_description="Gets all the questions associated with a specific player, grouped by difficulty")
@@ -30,7 +30,7 @@ async def get_tag_questions(tags: List) -> List[Question]:
     }
     
     questions = questions_coll.find(query)
-    return questions.to_list(length=None)
+    return await questions.to_list(length=None)
 
 @router.get("/tags", response_model=List[str], response_description="Returns a list of all unique tags found linked to questions")
 async def get_tags() -> List[str]:
