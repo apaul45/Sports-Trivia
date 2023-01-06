@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import backendApi from "src/boot/axios";
+import { User } from "src/types";
 
 interface State { 
     user: string
@@ -13,18 +14,18 @@ export const useUserStore = defineStore<string, State>('users', {
     }),
     getters: {},
     actions: {
-        async loginUser(username: string, password: string){
+        async loginUser(form: User){
             const formData = new FormData();
-            formData.append('grant_type', 'password')
-            formData.append('username', username)
-            formData.append('password', password)
-            const response1 = await backendApi.loginUser(formData);
-            backendApi.setHeader(response1.data.access_token);
-            this.user = username;
+            formData.append('grant_type', 'password');
+            formData.append('username', form.username);
+            formData.append('password', form.password);
+
+            const response = await backendApi.loginUser(formData);
+            backendApi.setHeader(response.data.access_token);
+            this.user = form.username;
         },
-        async registerUser(username: string, password: string, password_confirmed: string){
-            const response = await backendApi.registerUser({username, password, password_confirmed});
-            return response;
+        async registerUser(form: User){
+            await backendApi.registerUser(form);
         },
         logout(){
             backendApi.setHeader('');

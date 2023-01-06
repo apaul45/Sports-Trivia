@@ -1,43 +1,45 @@
 <script setup>
-import {onBeforeMount, ref} from 'vue'
+import {onBeforeMount, reactive} from 'vue'
 import backendApi from 'src/boot/axios';
+import { QInput, QIcon, QSelect, QBtnDropdown, QList, QItem, QItemSection, QItemLabel, QBtn } from 'quasar';
 
 const props = defineProps({filteredQuestions: Array});
 const emit = defineEmits(['update:filteredQuestions']);
 
-const searchText = ref('');
-const users = ref([]);
-const filteredUsers = ref([]);
-const tags = ref([]);
-const filteredTags = ref([]);
+const refs = reactive({
+    searchText: '',
+    users: [],
+    filteredUsers: [],
+    tags: [],
+    filteredTags: []
+});
 
 onBeforeMount(async() => {
-    let response = await backendApi.getAllUsers()
-    console.log(response)
-    users.value = response.data.map((user) => user.username);
-    response = await backendApi.getAllTags()
-    tags.value = response.data;
+    let response = await backendApi.getAllUsers();
+    refs.users = response.data.map((user) => user.username);
+    response = await backendApi.getAllTags();
+    refs.tags = response.data;
 });
 
 async function resetQuestions(){
     const response = await backendApi.getAllQuestions();
-    filteredTags.value = [];
-    filteredUsers.value = [];
-    searchText.value = [];
+    refs.filteredTags = [];
+    refs.filteredUsers = [];
+    refs.searchText = "";
     emit('update:filteredQuestions', response.data);
 }
 
 async function filterQuestions(){
     let result = [];
 
-    if (searchText.value.length > 0){
-        result.push({player: searchText.value});
+    if (refs.searchText.length > 0){
+        result.push({player: refs.searchText});
     }
-    if (filteredUsers.value.length > 0){ 
-        result.push({username: {$in: filteredUsers.value}});
+    if (refs.filteredUsers.length > 0){ 
+        result.push({username: {$in: refs.filteredUsers}});
     }
-    if (filteredTags.value.length > 0){
-        result.push({tags: {$in: filteredTags.value}});
+    if (refs.filteredTags.length > 0){
+        result.push({tags: {$in: refs.filteredTags}});
     }
 
     if (result.length == 0) {
@@ -48,7 +50,6 @@ async function filterQuestions(){
     const response = await backendApi.getFilteredQuestions(result);
     emit('update:filteredQuestions', response.data);
 }
-
 </script>
 
 <template>
@@ -56,7 +57,7 @@ async function filterQuestions(){
         <q-input 
         style="width: 30%"
         outlined 
-        v-model="searchText" 
+        v-model="refs.searchText" 
         >
             <template v-slot:prepend>
                 <q-icon name="search" />
@@ -65,8 +66,8 @@ async function filterQuestions(){
 
         <q-select
         label="Users"
-        v-model="filteredUsers"
-        :options="users"
+        v-model="refs.filteredUsers"
+        :options="refs.users"
         filled
         use-chips
         multiple
@@ -76,8 +77,8 @@ async function filterQuestions(){
 
         <q-select
         label="Tags"
-        v-model="filteredTags"
-        :options="tags"
+        v-model="refs.filteredTags"
+        :options="refs.tags"
         filled
         bg-color="grey-3"
         use-chips
@@ -88,13 +89,14 @@ async function filterQuestions(){
 
         <q-btn-dropdown color="grey-3" text-color="black" size="lg"  no-caps label="Sort By">
             <q-list>
-                <q-item clickable v-close-popup @click="onItemClick">
+                <q-item clickable v-close-popup>
                     <q-item-section>
                         <q-item-label>Difficulty</q-item-label>
                     </q-item-section>
                 </q-item>
             </q-list>
         </q-btn-dropdown>
+        
         <q-btn @click="resetQuestions" label="Reset" color="grey-3" text-color="black"/>
         <q-btn @click="filterQuestions" label="Submit" type="submit" color="primary"/>
     </div>

@@ -8,10 +8,10 @@ declare module '@vue/runtime-core' {
 }
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000',
+  baseURL: 'https://sports-trivia-bn57cau7zq-uc.a.run.app/',
   headers: {
     Accept: 'application/json'
-  }
+  },
 })
 
 export function setHeader(token: string){
@@ -30,9 +30,9 @@ export const registerUser = (payload: User) => api.post('/register', payload)
 export const loginUser = (form: FormData) => { return api.post('/login', form) }
 
 // Query Routes
-export const getAllQuestions = () => api.get('/questions')
-export const getAllUsers = () => api.get('/users')
-export const getAllTags = () => api.get('/tags')
+export const getAllQuestions = () => api.get<Question[]>('/questions')
+export const getAllUsers = () => api.get<User[]>('/users')
+export const getAllTags = () => api.get<String[]>('/tags')
 export const getAllSets = () => api.get<Set[]>('/sets')
 export const getNumberOfSets = () => api.get<number>(`/sets?is_count=${true}`)
 

@@ -6,7 +6,7 @@ import { useUserStore } from 'src/stores/user-store';
 import { Set } from 'src/types';
 import { useRouter } from 'vue-router';
 
-interface Props{
+interface Props {
     sets: Set[]
 }
 
@@ -44,11 +44,13 @@ const deleteSet = async(setToDelete: Set) => {
                 <div class="row items-center no-wrap">
                     <div class="col">
                         <div class="text-h6"> {{set.title}} </div>
-                        <div v-if="set.username !== user">
-                            {{set.username}}
-                        </div>
+
+                        <div v-if="set.username !== user"> {{set.username}} </div>
+
                         {{set.questions.length}} questions
+
                         <br/>
+                        
                         {{set.rating}}<q-icon name="star" />
                     </div>
 

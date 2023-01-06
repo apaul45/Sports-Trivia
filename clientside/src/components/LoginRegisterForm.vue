@@ -1,25 +1,30 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { reactive } from 'vue';
 import { useUserStore } from 'src/stores/user-store';
+import { QExpansionItem, QForm, QInput, QBtn } from 'quasar';
+import { registerUser } from 'src/boot/axios';
+import { User } from 'src/types';
 
-const props = defineProps({registerUser: Boolean})
+const props = defineProps({registerUser: Boolean});
 
-const username = ref<string>('');
-const password = ref<string>('');
-const passwordConfirmed = ref<string>('');
+const refs = reactive<User>({
+    username: '',
+    password: '',
+    password_confirmed: ''
+});
 
 const inputCondition = (val: string) => val && val.length > 0 || 'Please provide a value';
 
 const registerLogin = async() => {
     if (props.registerUser){
-        const response = await useUserStore().registerUser(username.value, password.value, passwordConfirmed.value);
-        if (response.status !== 200) return; //TODO: Need error handling here 
+        await useUserStore().registerUser(refs);
     }
-    await useUserStore().loginUser(username.value, password.value);
+    
+    await useUserStore().loginUser(refs);
 
-    username.value = ' ';
-    password.value = ' ';
-    passwordConfirmed.value = ' ';
+    Object.keys(refs).forEach(
+        (key) => refs[key] = ''
+    );
 }
 </script>
 
@@ -34,7 +39,7 @@ const registerLogin = async() => {
             <q-input
             filled
             style="width: 97%;"
-            v-model="username"
+            v-model="refs.username"
             lazy-rules
             :rules="[inputCondition]"
             label-slot clearable
@@ -44,7 +49,7 @@ const registerLogin = async() => {
             <q-input
             filled
             style="width: 97%;"
-            v-model="password"
+            v-model="refs.password"
             lazy-rules
             :rules="[inputCondition]"
             label-slot clearable
@@ -55,7 +60,7 @@ const registerLogin = async() => {
                 <q-input
                 filled
                 style="width: 97%;"
-                v-model="passwordConfirmed"
+                v-model="refs.password_confirmed"
                 lazy-rules
                 :rules="[inputCondition]"
                 label-slot clearable
@@ -69,5 +74,6 @@ const registerLogin = async() => {
             color="primary"
             />
        </q-form>
+       <br/>
     </q-expansion-item>
 </template>
