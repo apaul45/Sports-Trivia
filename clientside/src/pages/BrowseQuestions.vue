@@ -40,7 +40,7 @@ const saveSet = async() => {
 <template>
     <div class="q-pa-md">
 
-        <h1 v-if="this.$route.path === '/questions'" id="questions">
+        <h1 v-if="$route.path === '/questions'" id="questions">
             Browse Questions
         </h1>
 
@@ -76,7 +76,7 @@ const saveSet = async() => {
 
         <q-layout view="hHh Lpr lff" 
         container 
-        v-bind:style="this.$route.path === '/questions' ? 'height: 400px;' : 'height:470px'" 
+        v-bind:style="$route.path === '/questions' ? 'height: 400px;' : 'height:470px'" 
         class="shadow-2 rounded-borders"
         >
             <filter-sort-questions 
@@ -88,7 +88,7 @@ const saveSet = async() => {
                 <!-- Make sure to correctly configure the row key to be unique 
                 so all rows aren't selected when one row is selected -->
                 <q-table 
-                v-if="this.$route.path === '/questions'"
+                v-if="$route.path === '/questions'"
                 :rows="filteredQuestions"
                 :columns="columns"
                 />

@@ -8,7 +8,7 @@ declare module '@vue/runtime-core' {
 }
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000',
+  baseURL: 'https://sports-trivia-bn57cau7zq-uc.a.run.app/',
   headers: {
     Accept: 'application/json'
   },
