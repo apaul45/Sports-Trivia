@@ -22,6 +22,11 @@ module.exports = configure(function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-webpack/boot-files
+    animations: [
+      'fadeIn',
+      'fadeOut'
+    ],
+
     boot: [
       
       'axios',
@@ -134,8 +139,8 @@ module.exports = configure(function (ctx) {
       // chainWebpackCustomSW (/* chain */) {},
 
       manifest: {
-        name: `ST APP`,
-        short_name: `ST APP`,
+        name: `Sports Trivia`,
+        short_name: `Sports Trivia`,
         description: ``,
         display: 'standalone',
         orientation: 'portrait',

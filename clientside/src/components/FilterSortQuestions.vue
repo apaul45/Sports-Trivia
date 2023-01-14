@@ -1,9 +1,16 @@
 <script setup>
 import {onBeforeMount, reactive} from 'vue'
 import backendApi from 'src/boot/axios';
-import { QInput, QIcon, QSelect, QBtnDropdown, QList, QItem, QItemSection, QItemLabel, QBtn } from 'quasar';
+import { 
+    QInput, 
+    QIcon, 
+    QSelect, 
+    QItem, 
+    QBtn, 
+    QDrawer 
+} from 'quasar';
 
-const props = defineProps({filteredQuestions: Array});
+const props = defineProps({filteredQuestions: Array, show: Boolean});
 const emit = defineEmits(['update:filteredQuestions']);
 
 const refs = reactive({
@@ -21,12 +28,10 @@ onBeforeMount(async() => {
     refs.tags = response.data;
 });
 
-async function resetQuestions(){
-    const response = await backendApi.getAllQuestions();
+function resetQuestions(){
     refs.filteredTags = [];
     refs.filteredUsers = [];
     refs.searchText = "";
-    emit('update:filteredQuestions', response.data);
 }
 
 async function filterQuestions(){
@@ -42,62 +47,92 @@ async function filterQuestions(){
         result.push({tags: {$in: refs.filteredTags}});
     }
 
-    if (result.length == 0) {
-        resetQuestions();
-        return;
-    }
+    const response = (
+        result.length > 0 
+        ? await backendApi.getFilteredQuestions(result)
+        : await backendApi.getAllQuestions()
+    );
 
-    const response = await backendApi.getFilteredQuestions(result);
     emit('update:filteredQuestions', response.data);
+    emit('update:show', false);
 }
 </script>
 
 <template>
-    <div class="q-gutter-md row items-start" style="align-items: center; justify-content: center;;">
-        <q-input 
-        style="width: 30%"
-        outlined 
-        v-model="refs.searchText" 
-        >
-            <template v-slot:prepend>
-                <q-icon name="search" />
-            </template>
-        </q-input>
+    <q-drawer
+    v-model="show"
+    show-if-above
+    side="right"
+    overlay
+    bordered
+    class="bg-grey-2"
+    :width="400"
+    :breakpoint="500"
+    >
 
-        <q-select
-        label="Users"
-        v-model="refs.filteredUsers"
-        :options="refs.users"
-        filled
-        use-chips
-        multiple
-        style="width: 10%"
-        >
-        </q-select>
+    <div class="q-pa-sm">
+        <h1 class="container">Filters</h1>
 
-        <q-select
-        label="Tags"
-        v-model="refs.filteredTags"
-        :options="refs.tags"
-        filled
-        bg-color="grey-3"
-        use-chips
-        multiple
-        style="width: 10%"
-        >
-        </q-select>
+        <q-form @submit="filterQuestions" @reset="resetQuestions">
+            <q-item>
+                <q-input 
+                outlined 
+                v-model="refs.searchText" 
+                class="form-element"
+                dense
+                >
+                    <template v-slot:prepend>
+                        <q-icon name="search" />
+                    </template>
+                </q-input>
+            </q-item>
 
-        <q-btn-dropdown color="grey-3" text-color="black" size="lg"  no-caps label="Sort By">
-            <q-list>
-                <q-item clickable v-close-popup>
-                    <q-item-section>
-                        <q-item-label>Difficulty</q-item-label>
-                    </q-item-section>
-                </q-item>
-            </q-list>
-        </q-btn-dropdown>
-        
-        <q-btn @click="resetQuestions" label="Reset" color="grey-3" text-color="black"/>
-        <q-btn @click="filterQuestions" label="Submit" type="submit" color="primary"/>
+            <q-item>
+                <q-select
+                label="Users"
+                class="form-element"
+                v-model="refs.filteredUsers"
+                :options="refs.users"
+                filled
+                use-chips
+                multiple
+                dense
+                />
+            </q-item>
+
+            <q-item>
+                <q-select
+                label="Tags"
+                class="form-element"
+                v-model="refs.filteredTags"
+                :options="refs.tags"
+                filled
+                bg-color="grey-3"
+                use-chips
+                multiple
+                dense
+                />
+            </q-item>
+
+            <q-item>
+                <q-btn label="Reset" type="reset" flat color="primary"/>
+                <q-space/>
+                <q-btn label="Submit" type="submit" color="primary"/>
+            </q-item>
+        </q-form>
     </div>
+    </q-drawer>
 </template>
+
+<style scoped lang="scss">
+.container {
+    font-size: 25px;
+    font-weight: 400;
+    text-align: center;
+    line-height: normal;
+    margin-top: 10%;
+}
+.form-element {
+    width: 100%;
+}
+</style>

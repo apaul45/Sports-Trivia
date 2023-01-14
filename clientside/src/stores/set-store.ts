@@ -3,8 +3,7 @@ import { Question, Set } from "src/types";
 import backendApi from "src/boot/axios";
 
 interface State {
-    setBeingAdded: Set,
-    setBeingViewed: Set
+    set: Set,
 }
 
 const defaultSet: Set = {
@@ -16,39 +15,38 @@ const defaultSet: Set = {
 
 export const useSetStore = defineStore<string, State>('sets', {  
      state: () => ({
-        setBeingAdded: defaultSet,
-        setBeingViewed: defaultSet
+        set: defaultSet,
       }),
       getters: {},
       actions: {
         setDefault() {
-            this.setBeingAdded.questions = [];
-            this.setBeingAdded.title = '';
-            this.setBeingAdded.rating = 0;
+            this.set.questions = [];
+            this.set.title = '';
+            this.set.rating = 0;
+            this.set._id = undefined;
         },
-        updateSetBeingAdded(set: Set) {
-            this.setBeingAdded = set;
-        },
-        updateSetBeingViewed(set: Set) {
-            this.setBeingViewed = set;
+        updateSet(set: Set) {
+            this.set = set;
         },
         addToSet(questions: Array<Question>) {
-            this.setBeingAdded.questions.push(...questions);
+            this.set.questions.push(...questions);
         },
         deleteFromSet(questions: Array<Question>) {
-            this.setBeingAdded.questions = this.setBeingAdded.questions.filter((question) => questions.indexOf(question) == -1);
+            this.set.questions = this.set.questions.filter(
+                (question) => questions.indexOf(question) == -1
+            );
         },
         updateSetField(value: never, field: keyof Set) {
-            this.setBeingAdded[field] = value;
+            this.set[field] = value;
         },
         async saveToDb(method: string) {
             //TODO: Add error handling
             if (method === 'POST'){
-                await backendApi.createSet(this.setBeingAdded);
+                await backendApi.createSet(this.set);
                 return;
             }
             
-            await backendApi.updateSet(this.setBeingAdded._id, this.setBeingAdded);
+            await backendApi.updateSet(this.set._id, this.set);
         }
       },
 });

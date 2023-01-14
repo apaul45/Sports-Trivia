@@ -2,7 +2,6 @@
 import { reactive } from 'vue';
 import { useUserStore } from 'src/stores/user-store';
 import { QExpansionItem, QForm, QInput, QBtn } from 'quasar';
-import { registerUser } from 'src/boot/axios';
 import { User } from 'src/types';
 
 const props = defineProps({registerUser: Boolean});
@@ -19,7 +18,7 @@ const registerLogin = async() => {
     if (props.registerUser){
         await useUserStore().registerUser(refs);
     }
-    
+
     await useUserStore().loginUser(refs);
 
     Object.keys(refs).forEach(
@@ -31,14 +30,16 @@ const registerLogin = async() => {
 <template>
     <q-expansion-item
     expand-separator
-    :label="registerUser ? 'Register' : 'Login'"
+    :label="props.registerUser ? 'Register' : 'Login'"
     >
-        <q-form style="padding-left:3%">
+        <q-form 
+        @submit="registerLogin"  
+        class="form">
 
             Username:
             <q-input
             filled
-            style="width: 97%;"
+            class="input"
             v-model="refs.username"
             lazy-rules
             :rules="[inputCondition]"
@@ -48,7 +49,7 @@ const registerLogin = async() => {
             Password:
             <q-input
             filled
-            style="width: 97%;"
+            class="input"
             v-model="refs.password"
             lazy-rules
             :rules="[inputCondition]"
@@ -59,7 +60,7 @@ const registerLogin = async() => {
                 Password Confirmed:
                 <q-input
                 filled
-                style="width: 97%;"
+                class="input"
                 v-model="refs.password_confirmed"
                 lazy-rules
                 :rules="[inputCondition]"
@@ -68,8 +69,7 @@ const registerLogin = async() => {
             </div>
 
             <q-btn 
-            @click="registerLogin" 
-            type="submit" 
+            type="Submit" 
             label="Submit" 
             color="primary"
             />
@@ -77,3 +77,12 @@ const registerLogin = async() => {
        <br/>
     </q-expansion-item>
 </template>
+
+<style scoped lang="scss">
+.form {
+    padding-left:3%;
+}
+.input {
+    width: 97%;
+}
+</style>

@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios'
+import axios, { AxiosInstance } from 'axios'
 import { Question, Set, User } from '../types'
 
 declare module '@vue/runtime-core' {
@@ -8,7 +8,7 @@ declare module '@vue/runtime-core' {
 }
 
 const api = axios.create({
-  baseURL: 'https://sports-trivia-bn57cau7zq-uc.a.run.app/',
+  baseURL: 'http://127.0.0.1:8000',
   headers: {
     Accept: 'application/json'
   },

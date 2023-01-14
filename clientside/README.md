@@ -1,4 +1,4 @@
-# ST APP (clientside)
+# Sports Trivia (clientside)
 
 Trivia App
 

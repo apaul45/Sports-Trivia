@@ -1,5 +1,3 @@
-import { h, Fragment } from "vue";
-
 export const columns = [
     {
         name: 'username',
@@ -21,7 +19,11 @@ export const columns = [
         required: true,
         label: 'Answer',
         align: 'left',
-        field: (row) => row.answer
+        field: (row) => <details> 
+                            <summary>
+                                {row.answer} 
+                            </summary>
+                        </details>
     },
     {
         name: 'difficulty',

@@ -2,7 +2,7 @@
   "name": "clientside",
   "version": "0.0.1",
   "description": "Trivia App",
-  "productName": "ST APP",
+  "productName": "Sports Trivia",
   "author": "Ayon Paul <ayon.paul@stonybrook.edu>",
   "private": true,
   "scripts": {

@@ -1,1 +1,13 @@
 // app global css in SCSS form
+summary { 
+    color: black; 
+    background-color:black;
+}
+  
+summary:active {
+    background-color: transparent;
+}
+
+summary:focus {
+    background-color: transparent;
+}

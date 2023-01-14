@@ -24,22 +24,32 @@ const allSetsComputed = computed(() => allSets.value.filter((set) => set.usernam
 //Can use a getter and setter on a computed value to allow for a delete callback to update allSets, which then
 //causes the getter to return an updated view of the users sets
 const userSets = computed({
-    get() {return allSets.value.filter((set) => set.username === user.value)},
-    set(set_id: number){allSets.value = allSets.value.filter((set:Set) => set._id !== set_id)}
+    get() {
+        return allSets.value.filter(
+            (set) => set.username === user.value
+        );
+    },
+    set(set_id: number){
+        allSets.value = allSets.value.filter(
+            (set:Set) => set._id !== set_id
+        );
+    }
 });
 
 </script>
 
 <template>
-    <h1 id="questions">Welcome Back!</h1>
+    <h1 id="questions">
+        Welcome<span v-if="user.length > 0"> {{ " " + user }}</span>!
+    </h1>
 
     <div v-if="user.length > 0">
         <div class="q-gutter-md row items-start lists">
             <h2 class="list-headings">Your Lists</h2>
-            <q-separator />
             <q-btn outline @click="$router.push('/set')">
                 <q-icon name="add" />
             </q-btn>
+            <q-separator />
         </div>
 
         <set-card v-model:sets="userSets" />
@@ -61,6 +71,7 @@ const userSets = computed({
         font-weight: 500;
         text-align: center;
         justify-content: center;
+        padding-bottom: 3%;
     }
     .list-headings {
         font-size: 40px;

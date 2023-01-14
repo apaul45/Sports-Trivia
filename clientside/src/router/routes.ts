@@ -3,7 +3,7 @@ import { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
      path: '/',
-     component: () => import('pages/WelcomePage.vue'),
+     component: () => import('pages/HomePage.vue'), //Create welcome page in the future
   },
   {
     path: '/home',
@@ -13,17 +13,14 @@ const routes: RouteRecordRaw[] = [
      path: '/questions',
      component: () => import('pages/BrowseQuestions.vue'),
   },
+
   {
-    path: '/questions/add',
+    path: '/set',
     component: () => import('pages/BrowseQuestions.vue'),
   },
   {
-    path: '/set',
-    component: () => import('pages/ViewSetPage.vue'),
-  },
-  {
-    path: '/set/edit:id',
-    component: () => import('pages/ViewSetPage.vue')
+    path: '/set/:id',
+    component: () => import('pages/BrowseQuestions.vue')
   },
   {
     path: '/set-page/:id',

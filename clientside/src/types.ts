@@ -1,4 +1,4 @@
-interface Question{
+interface Question {
     question: string
     answer: string
     difficulty: string
@@ -6,22 +6,31 @@ interface Question{
     player: string
     tags: Array<string>
   }
+
+  interface TrackedQuestion extends Question {
+    correct?: boolean;
+    inputtedAnswer?: string
+  }
   
-  interface Set{
+  interface Set {
     _id?: string,
     title: string
     username: string
     questions: Array<Question>
     rating: number
   }
+
+  interface TrackedSet extends Set {
+    questions: Array<TrackedQuestion>;
+  }
   
-  interface User{
+  interface User {
     username: string
     password: string
     password_confirmed?: string
   }
   
-  interface AggregateQuestions{
+  interface AggregateQuestions {
     doc: Array<Question>
     _id: string
   }
@@ -29,6 +38,7 @@ interface Question{
   export {
     Question, 
     Set, 
+    TrackedSet,
     User, 
     AggregateQuestions
   }

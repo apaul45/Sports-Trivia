@@ -15,6 +15,20 @@ const defaultQuestion = {
 }
 
 const inputFields = ["question", "answer", "player"]; //Use to reduce duplicate q-inputs
+const difficultyOptions = [
+    {
+        label: 'Easy',
+        value: 'easy'
+    },
+    {
+        label: 'Medium',
+        value: 'medium'
+    },
+    {
+        label: 'Hard',
+        value: 'hard'
+    }
+]
 
 const question = reactive({...defaultQuestion});
 
@@ -34,7 +48,11 @@ function onReset() {
     <q-dialog v-model="props.visible">
         <q-card>
             <q-card-section class="row items-center">
-                <q-form @submit="addQuestion" @reset="onReset" class="q-gutter-md">
+                <q-form 
+                class="q-gutter-md"
+                @submit="addQuestion" 
+                @reset="onReset" 
+                >
                     <!-- Use label-slot and v-slot: label to customize the input field's label -->
                     <div v-for= "value in inputFields" v-bind:key="value">
                         <q-input
@@ -45,14 +63,20 @@ function onReset() {
                         label-slot clearable
                         >
                             <template v-slot:label>
-                                <div class="row items-center all-pointer-events"> {{value[0].toUpperCase() + value.substr(1)}} </div>
+                                <div class="row items-center all-pointer-events"> 
+                                    {{value[0].toUpperCase() + value.substr(1)}} 
+                                </div>
                             </template>
                         </q-input>
                     </div>
 
-                    <q-radio v-model="question.difficulty" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="easy" label="Easy" />
-                    <q-radio v-model="question.difficulty" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="medium" label="Medium" />
-                    <q-radio v-model="question.difficulty" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="hard" label="Hard" />
+                    <q-option-group
+                    name="Difficulty"
+                    v-model="question.difficulty"
+                    :options="difficultyOptions"
+                    color="primary"
+                    inline
+                    />
 
                     <q-select
                     label="Tags"
@@ -64,17 +88,18 @@ function onReset() {
                     hide-dropdown-icon
                     input-debounce="0"
                     new-value-mode="add"
-                    style="width: 250px"
+                    style="width: 95%"
                     />
 
-                    <q-btn label="Submit" type="submit" color="primary"/>
                     <q-btn label="Reset" type="reset" color="primary" flat/>
+                    <q-btn label="Submit" type="submit" color="primary"/>
                     <q-btn 
                     @click="$emit('update:visible', false)" 
                     label="Cancel" 
                     color="primary"
                     flat
-                    v-close-popup/>
+                    v-close-popup
+                    />
                 </q-form>
             </q-card-section>
         </q-card>
