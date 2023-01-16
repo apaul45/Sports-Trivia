@@ -1,5 +1,6 @@
 <script setup>
 import backendApi from 'src/boot/axios';
+import { errorStore } from 'src/stores/error-store';
 import {reactive} from 'vue';
 
 const props = defineProps({visible: Boolean, filteredQuestions: Array});
@@ -33,10 +34,15 @@ const difficultyOptions = [
 const question = reactive({...defaultQuestion});
 
 async function addQuestion(){
-    await backendApi.createQuestion(question.value); //TODO: Add error handling
-    const response = await backendApi.getAllQuestions(); 
-    emit('update:filteredQuestions', response.data);
-    emit('update:visible', false);
+    try {
+        await backendApi.createQuestion(question); 
+        const response = await backendApi.getAllQuestions(); 
+        emit('update:filteredQuestions', response.data);
+        emit('update:visible', false);
+    }
+    catch(error) {
+        errorStore.setMessage("There was a problem adding your question. Please try again.");
+    }
 }  
 
 function onReset() {

@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
 import { Question, Set } from "src/types";
 import backendApi from "src/boot/axios";
+import { errorStore } from "./error-store";
 
 interface State {
-    set: Set,
+    set: Set
 }
 
 const defaultSet: Set = {
@@ -15,7 +16,7 @@ const defaultSet: Set = {
 
 export const useSetStore = defineStore<string, State>('sets', {  
      state: () => ({
-        set: defaultSet,
+        set: defaultSet
       }),
       getters: {},
       actions: {
@@ -41,12 +42,17 @@ export const useSetStore = defineStore<string, State>('sets', {
         },
         async saveToDb(method: string) {
             //TODO: Add error handling
-            if (method === 'POST'){
-                await backendApi.createSet(this.set);
-                return;
+            try {
+                if (method === 'POST'){
+                    await backendApi.createSet(this.set);
+                    return;
+                }
+                
+                await backendApi.updateSet(this.set._id, this.set);
             }
-            
-            await backendApi.updateSet(this.set._id, this.set);
+            catch(error) {
+                errorStore.setMessage("There was a problem saving your set. Please try again.");
+            }
         }
       },
 });

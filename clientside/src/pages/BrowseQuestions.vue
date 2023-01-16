@@ -8,6 +8,7 @@ import { useSetStore } from 'src/stores/set-store';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useUserStore } from 'src/stores/user-store';
+import { errorStore } from 'src/stores/error-store';
 
 const showQuestionModal = ref(false);
 const showFilters = ref(false);
@@ -25,8 +26,13 @@ onBeforeMount(async() => {
         setStore.setDefault();
     }
 
-    let response = await backendApi.getAllQuestions()
-    filteredQuestions.value = response.data;
+    try {
+        let response = await backendApi.getAllQuestions()
+        filteredQuestions.value = response.data;
+    }
+    catch {
+        errorStore.setMessage("There was a problem retrieving questions. Please reload the page.");
+    }
 });
 
 const saveSet = async() => {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import backendApi from 'src/boot/axios';
+import { errorStore } from 'src/stores/error-store';
 import { useSetStore } from 'src/stores/set-store';
 import { useUserStore } from 'src/stores/user-store';
 import { Set } from 'src/types';
@@ -27,53 +28,62 @@ const openSetPage = (set: Set) => {
 
 //For user sets only
 
-const editSet = (setToUpdate: Set) => {
+const editSet = (event: Event, setToUpdate: Set) => {
+    event.stopPropagation();
     setStore.updateSet(setToUpdate);
     router.push(`/set/${setToUpdate._id}`);
 }
-const deleteSet = async(setToDelete: Set) => {
-    const response = await backendApi.deleteSet(setToDelete._id);
-    emit('update:sets', setToDelete._id);
+const deleteSet = async(event: Event, setToDelete: Set) => {
+    event.stopPropagation();
+    try {
+        await backendApi.deleteSet(setToDelete._id);
+        emit('update:sets', setToDelete._id);
+    }
+    catch {
+        errorStore.setMessage("Your set could not be deleted. Please try again.");
+    }
 }
 </script>
 
 <template>
-    <div class="q-pa-md row items-start q-gutter-md cards">
-        <q-card 
-        v-for="set in props.sets" 
-        class="my-card col" 
-        clickable  
-        @click="openSetPage(set)"
-        >
-            <q-card-section>
-                <div class="row items-center no-wrap">
-                    <div class="col">
-                        <div class="text-h6"> {{set.title}} </div>
+    <div class="q-pa-md cards">
+        <div class="row q-col-gutter-xs">
+            <div class="col-2" v-for="set in props.sets" :key="`xs-${set._id}`">
+                <q-card 
+                class="my-card row" 
+                clickable  
+                @click="openSetPage(set)"
+                >
+                    <q-card-section class="card-sections">
+                        <div class="row items-center">
+                            <div class="col">
+                                <div class="text-h6"> {{set.title}} </div>
 
-                        <div v-if="set.username !== user" id="username"> 
-                            {{set.username}} ({{set.rating}}<q-icon name="star" />)
+                                <div v-if="set.username !== user" id="username"> 
+                                    {{set.username}} ({{set.rating}}<q-icon name="star" />)
+                                </div>
+
+                                {{set.questions.length}} questions
+
+                                <div v-if="set.username === user" class="col user-btns">
+                                    <q-btn 
+                                    round flat
+                                    @click="(e) => editSet(e, set)"  
+                                    icon="draw"
+                                    />
+
+                                    <q-btn 
+                                    round flat 
+                                    @click="(e) => deleteSet(e, set)" 
+                                    icon="delete" 
+                                    />
+                                </div>
+                            </div>
                         </div>
-
-                        {{set.questions.length}} questions
-                    </div>
-
-                    <div v-if="set.username === user" class="col-auto">
-                        <q-btn @click.stop color="grey-7" round flat icon="more_vert">
-                            <q-menu auto-close>
-                                <q-list>
-                                    <q-item clickable @click="editSet(set)">
-                                        <q-item-section>Edit Set</q-item-section>
-                                    </q-item>
-                                    <q-item clickable @click="deleteSet(set)">
-                                        <q-item-section>Delete Set</q-item-section>
-                                    </q-item>
-                                </q-list>
-                            </q-menu>
-                        </q-btn>
-                    </div>
-                </div>
-            </q-card-section>
-        </q-card>
+                    </q-card-section>
+                </q-card>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -81,12 +91,14 @@ const deleteSet = async(setToDelete: Set) => {
     .cards{
         position: relative;
         right: -2%;
+        width: 100%;
     }
     .card-sections{
-        padding-left: 2%;
+        padding-right: 0%;
     }
     .my-card{
-        max-width: 15%;
+        max-width: 80%;
+        margin-bottom: 4%;
     }
     .my-card:hover {
         background-color: #0a2e67;
@@ -94,5 +106,8 @@ const deleteSet = async(setToDelete: Set) => {
     }
     #username {
         padding-bottom: 6%;
+    }
+    .user-btns {
+        margin-top: 13%;
     }
 </style>

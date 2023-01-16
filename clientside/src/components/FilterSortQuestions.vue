@@ -9,6 +9,7 @@ import {
     QBtn, 
     QDrawer 
 } from 'quasar';
+import { errorStore } from 'src/stores/error-store';
 
 const props = defineProps({filteredQuestions: Array, show: Boolean});
 const emit = defineEmits(['update:filteredQuestions']);
@@ -22,10 +23,15 @@ const refs = reactive({
 });
 
 onBeforeMount(async() => {
-    let response = await backendApi.getAllUsers();
-    refs.users = response.data.map((user) => user.username);
-    response = await backendApi.getAllTags();
-    refs.tags = response.data;
+    try {
+        let response = await backendApi.getAllUsers();
+        refs.users = response.data.map((user) => user.username);
+        response = await backendApi.getAllTags();
+        refs.tags = response.data;
+    }
+    catch {
+        errorStore.setMessage("There was an error retrieving filters. Please reload the page.");
+    }
 });
 
 function resetQuestions(){
@@ -47,14 +53,19 @@ async function filterQuestions(){
         result.push({tags: {$in: refs.filteredTags}});
     }
 
-    const response = (
-        result.length > 0 
-        ? await backendApi.getFilteredQuestions(result)
-        : await backendApi.getAllQuestions()
-    );
+    try {
+        const response = (
+            result.length > 0 
+            ? await backendApi.getFilteredQuestions(result)
+            : await backendApi.getAllQuestions()
+        );
 
-    emit('update:filteredQuestions', response.data);
-    emit('update:show', false);
+        emit('update:filteredQuestions', response.data);
+        emit('update:show', false);
+    }
+    catch {
+        errorStore.setMessage("A problem occurred when filtering, please try again.");
+    }
 }
 </script>
 

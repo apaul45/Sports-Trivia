@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import backendApi from "src/boot/axios";
 import { User } from "src/types";
+import { errorStore } from "./error-store";
 
 interface State { 
     user: string
@@ -20,12 +21,22 @@ export const useUserStore = defineStore<string, State>('users', {
             formData.append('username', form.username);
             formData.append('password', form.password);
 
-            const response = await backendApi.loginUser(formData);
-            backendApi.setHeader(response.data.access_token);
-            this.user = form.username;
+            try {
+                const response = await backendApi.loginUser(formData);
+                backendApi.setHeader(response.data.access_token);
+                this.user = form.username;
+            }
+            catch {
+                errorStore.setMessage("There was a problem trying to log you in. Please check your username/password and try again.");
+            }
         },
         async registerUser(form: User){
-            await backendApi.registerUser(form);
+            try {
+                await backendApi.registerUser(form);
+            }
+            catch {
+                errorStore.setMessage("Your account could not be registered. Try changing your username/checking password and try again.")
+            }
         },
         logout(){
             backendApi.setHeader('');

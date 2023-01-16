@@ -6,14 +6,20 @@ import SetCard from 'src/components/SetCard.vue';
 import { storeToRefs } from 'pinia';
 import { useUserStore } from 'src/stores/user-store';
 import { computed } from '@vue/reactivity';
+import { errorStore } from 'src/stores/error-store';
 
 const { user } = storeToRefs(useUserStore());
 
 const allSets = ref<Array<Set>>([]);
 
 onBeforeMount(async() => {
-    const response = await backendApi.getAllSets();
-    allSets.value = response.data;
+    try {
+        const response = await backendApi.getAllSets();
+        allSets.value = response.data;
+    }
+    catch {
+        errorStore.setMessage("There was a problem retrieving all sets. Please reload the page.");
+    }
 });
 
 //Since user is a state variable (meaning it's a ref which is reactive), allSets will filter whenever it changes
