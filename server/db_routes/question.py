@@ -84,25 +84,6 @@ async def get_all_questions():
 #             )
 
 #             await questions_coll.insert_one(jsonable_encoder(question))
-    
-#     query = [
-#         {
-#             '$group': {
-#                 '_id': '$question',
-#                 'doc': {
-#                     '$first': '$$ROOT'
-#                 }
-#             }
-#         }, {
-#             '$replaceRoot': {
-#                 'newRoot': '$doc'
-#             }
-#         }, {
-#             '$out': 'questions'
-#         }
-#     ]
-
-#     questions_coll.aggregate(query)
 
 #Token Required Functions: via dependency on oauth2 password bearer through get_current_user function
 @router.post("/question", response_model=Question)

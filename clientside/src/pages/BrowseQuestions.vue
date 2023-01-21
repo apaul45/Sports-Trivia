@@ -40,7 +40,6 @@ const saveSet = async() => {
     setStore.setDefault();
     router.push('/home');
 }
-
 </script>
 
 <template>
@@ -82,8 +81,8 @@ const saveSet = async() => {
 
         <q-layout view="hHh Lpr lff" 
         container 
-        v-bind:style="$route.path === '/questions' ? 'height: 400px;' : 'height:470px'" 
-        class="shadow-2 rounded-borders"
+        v-bind:style="$route.path === '/questions' ? 'height: 1000px;' : 'height:1070px'" 
+        class="rounded-borders"
         >
             <filter-sort-questions 
             v-model:show="showFilters"
@@ -97,6 +96,8 @@ const saveSet = async() => {
                 v-if="$route.path === '/questions'"
                 :rows="filteredQuestions"
                 :columns="columns"
+                :loading="filteredQuestions.length === 0"
+                dark
                 />
 
                 <q-table v-else
@@ -105,6 +106,8 @@ const saveSet = async() => {
                 row-key="question"
                 selection="multiple"
                 v-model:selected="set.questions"
+                :loading="filteredQuestions.length === 0"
+                dark
                 >
                     <template v-slot:top>
                         <q-btn color="primary" @click="saveSet"> 
@@ -130,21 +133,21 @@ const saveSet = async() => {
 </template>
 
 <style scoped>
-    #questions {
-        font-size: 40px;
-        font-weight: 500;
-        text-align: center;
-        justify-content: center;
-    }
-    .center-input{
-        margin: 2% auto; 
-        display: block;
-        text-align: center;
-    }
-    .set-name{
-        width: 15%; 
-    }
-    .buttons {
-        float: right;
-    }
+#questions {
+    font-size: 40px;
+    font-weight: 500;
+    text-align: center;
+    justify-content: center;
+}
+.center-input{
+    margin: 2% auto; 
+    display: block;
+    text-align: center;
+}
+.set-name{
+    width: 15%; 
+}
+.buttons {
+    float: right;
+}
 </style>

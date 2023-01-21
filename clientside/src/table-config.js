@@ -30,26 +30,37 @@ export const columns = [
         required: true,
         label: 'Difficulty',
         align: 'left',
-        field: (row) => row.difficulty,
-        sortable: true
+        field: (row) => row.difficulty[0].toUpperCase() + row.difficulty.substring(1),
+        sortable: true,
+        sort: (a,b) => sortByDifficulty(a,b)
     },
     {
         name: 'tags',
         required: true, 
         label: "Tags",
         align:'center',
-        field: (row) => createTagCards(row.tags)
+        field: (row) => createTagCards(row.tags),
+        // sortable: true,
+        // sort: (a, b) => a.childElementCount - b.childElementCount
     }
 ]
+
+const difficulty = ["Easy", "Medium", "Hard"];
+
+const sortByDifficulty = (a, b) => {
+    const aIndex = difficulty.findIndex((d) => d === a);
+    const bIndex = difficulty.findIndex((d) => d === b);
+
+    return aIndex - bIndex;
+}
 
 export const createTagCards = (tags) => {
     const style = "display: inline; \
                    padding: 7px; \
-                   text-color: white; \
+                   color: black; \
                    border-radius: 25px; \
                    background-color: #7CCB96; \
-                   text-align: center; \
-                   outline-style: solid;";
+                   text-align: center;";
 
     return <div style="overflow: auto; line-height: 3.5;"> 
                 {
