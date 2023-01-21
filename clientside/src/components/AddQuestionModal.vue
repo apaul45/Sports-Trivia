@@ -60,7 +60,7 @@ function onReset() {
                 @reset="onReset" 
                 >
                     <!-- Use label-slot and v-slot: label to customize the input field's label -->
-                    <div v-for= "value in inputFields" v-bind:key="value">
+                    <div v-for= "value in inputFields" :key="value">
                         <q-input
                         filled
                         v-model="question[value]"

@@ -15,7 +15,7 @@ const { user } = storeToRefs(useUserStore());
             flat 
             no-caps 
             padding="none"
-            size="40px" ß
+            size="40px"
             class="home"
             v-close-popup
             > 
@@ -25,12 +25,12 @@ const { user } = storeToRefs(useUserStore());
             <q-space />
 
             <q-btn 
-            @click="$router.push('/home')"
+            @click="$router.push('/')"
             flat 
             no-caps 
             padding="sm"
             size="30px" 
-            class="browse"
+            :class="'browse ' + ($route.path === '/' ? 'nav-buttons' : '')"
             >
                 Home
             </q-btn>
@@ -41,7 +41,7 @@ const { user } = storeToRefs(useUserStore());
             no-caps 
             padding="sm"
             size="30px" 
-            class="browse"
+            :class="'browse ' + ($route.path === '/questions' ? 'nav-buttons' : '')"
             >
                 Browse
             </q-btn>
@@ -74,16 +74,21 @@ const { user } = storeToRefs(useUserStore());
 </template>
 
 <style scoped lang="scss">
-    .home{
-        font-weight: normal;
-        .q-focus-helper{
-            display: none;
-         }
-    }
-    .browse{
-        font-weight: lighter;
-        .q-focus-helper{
-            display: none;
-         }
-    }
+.home{
+    font-weight: normal;
+    .q-focus-helper{
+        display: none;
+        }
+}
+.browse{
+    font-weight: lighter;
+    .q-focus-helper{
+        display: none;
+        }
+}
+.nav-buttons {
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-thickness: 1%;
+}
 </style>

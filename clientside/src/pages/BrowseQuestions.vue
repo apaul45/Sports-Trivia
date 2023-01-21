@@ -62,10 +62,10 @@ const saveSet = async() => {
         <q-item class="buttons">
             <q-btn 
             @click="showFilters = !showFilters" 
-            v-bind:label="(showFilters ? 'CLOSE' : 'SHOW') + ' FILTERS'" 
+            :label="(showFilters ? 'CLOSE' : 'SHOW') + ' FILTERS'" 
             no-caps 
-            v-bind:color="showFilters ? 'black' : 'white'"
-            v-bind:text-color="showFilters ? 'white' : 'black'"
+            :color="showFilters ? 'black' : 'white'"
+            :text-color="showFilters ? 'white' : 'black'"
             >
                 <q-icon name="filter_list" />
             </q-btn>
@@ -81,7 +81,7 @@ const saveSet = async() => {
 
         <q-layout view="hHh Lpr lff" 
         container 
-        v-bind:style="$route.path === '/questions' ? 'height: 1000px;' : 'height:1070px'" 
+        :style="$route.path === '/questions' ? 'height: 1000px;' : 'height:1070px'" 
         class="rounded-borders"
         >
             <filter-sort-questions 
