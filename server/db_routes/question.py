@@ -8,6 +8,10 @@ import sys
 sys.path.insert(0,"..")
 from server.id_model import PyObjectId
 
+import requests 
+from bs4 import BeautifulSoup
+import random
+
 #Can modularize path operations w/the API Router
 router = APIRouter(tags=["questions"])
 
@@ -17,8 +21,8 @@ class Question(BaseModel):
     question: str = Field(...)
     answer: str = Field(...)
     difficulty: str = Field(...)
-    username: Optional[str]
-    player: str = Field(...)
+    username: str = Field(...)
+    player: Optional[str]
     tags: List[str] = []
 
     class Config:
@@ -40,6 +44,69 @@ async def get_all_questions():
     #Use {_id: 0} to ignore the _id field when requesting: this is to prevent issues regarding ObjectIds in MongoDB
     questions = await questions_coll.find({}).to_list(length=None)
     return questions
+
+# @router.post("/scrape-questions")
+# async def scrape_questions():
+#     #Scraped from triviawell.com
+#     base_link = "https://www.triviawell.com/questions/sports/"
+
+#     content = requests.get(base_link).content
+#     scraper = BeautifulSoup(content, "html.parser")
+
+#     total_pages = len(scraper.find_all("li", class_="page-item d-none d-md-inline"))
+
+#     for i in range(total_pages):
+#         print("------------------PAGE " + str(i+1) + "------------------")
+
+#         difficulty = ["easy", "medium", "hard"]
+
+#         link = base_link + str(i+1)
+
+#         content = requests.get(link).content
+#         scraper = BeautifulSoup(content, "html.parser")
+
+#         page_questions = scraper.find_all("div", class_="card-body")
+
+#         for question in page_questions:
+#             q = question.find("h4").a.text
+#             answer = question.find("ul", class_="d-none answer").li.text
+#             tags = question.find("ul", class_="mb-3 list-inline").li.find_all("a")
+
+#             tags = [a.text for a in tags]
+#             tags.remove("Sports")
+
+#             question = Question(
+#                 question=q.strip(), 
+#                 answer=answer.strip(), 
+#                 tags=tags,
+#                 username="Triviawell",
+#                 difficulty=random.choice(difficulty)
+#             )
+
+#             await questions_coll.insert_one(jsonable_encoder(question))
+    
+#     query = [
+#         {
+#             '$group': {
+#                 '_id': '$question',
+#                 'doc': {
+#                     '$first': '$$ROOT'
+#                 }
+#             }
+#         }, {
+#             '$replaceRoot': {
+#                 'newRoot': '$doc'
+#             }
+#         }, {
+#             '$out': 'questions'
+#         }
+#     ]
+
+#     questions_coll.aggregate(query)
+            
+
+        
+
 
 #Token Required Functions: via dependency on oauth2 password bearer through get_current_user function
 @router.post("/question", response_model=Question)
