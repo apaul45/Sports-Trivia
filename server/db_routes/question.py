@@ -8,9 +8,9 @@ import sys
 sys.path.insert(0,"..")
 from server.id_model import PyObjectId
 
-import requests 
-from bs4 import BeautifulSoup
-import random
+# import requests 
+# from bs4 import BeautifulSoup
+# import random
 
 #Can modularize path operations w/the API Router
 router = APIRouter(tags=["questions"])
@@ -103,10 +103,6 @@ async def get_all_questions():
 #     ]
 
 #     questions_coll.aggregate(query)
-            
-
-        
-
 
 #Token Required Functions: via dependency on oauth2 password bearer through get_current_user function
 @router.post("/question", response_model=Question)
