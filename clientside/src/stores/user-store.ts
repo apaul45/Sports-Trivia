@@ -22,8 +22,7 @@ export const useUserStore = defineStore<string, State>('users', {
             formData.append('password', form.password);
 
             try {
-                const response = await backendApi.loginUser(formData);
-                backendApi.setHeader(response.data.access_token);
+                await backendApi.loginUser(formData);
                 this.user = form.username;
             }
             catch {
@@ -38,8 +37,9 @@ export const useUserStore = defineStore<string, State>('users', {
                 errorStore.setMessage("Your account could not be registered. Try changing your username/checking password and try again.")
             }
         },
-        logout(){
-            backendApi.setHeader('');
+        async logout(){
+            // backendApi.setHeader('');
+            await backendApi.logout();
             this.user = '';
         }
     },

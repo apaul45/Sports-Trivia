@@ -7,16 +7,16 @@ declare module '@vue/runtime-core' {
   }
 }
 
+axios.defaults.withCredentials = true;
+
 const api = axios.create({
   baseURL: 'https://sports-trivia-bn57cau7zq-uc.a.run.app/',
+  withCredentials: true,                
   headers: {
-    Accept: 'application/json'
+    "Access-Control-Allow-Origin": "https://sports-trivia-bn57cau7zq-uc.a.run.app/",
   },
-})
+});
 
-export function setHeader(token: string){
-  api.defaults.headers.common.Authorization = `Bearer ${token}`
-}
 
 export const createQuestion = (payload: Question) => api.post('/question', payload)
 export const deleteQuestion = (question: string) => api.delete(`/question/${question}`)
@@ -27,7 +27,8 @@ export const deleteSet = (id: any) => api.delete(`/set/${id}`)
 export const updateSet = (id: any, payload: Set) => api.put(`/set/${id}`, payload)
 
 export const registerUser = (payload: User) => api.post('/register', payload)
-export const loginUser = (form: FormData) => { return api.post('/login', form) }
+export const loginUser = (form: FormData) => api.post('/login', form)
+export const logout = () => api.post('/logout');
 
 // Query Routes
 export const getAllQuestions = () => api.get<Question[]>('/questions')
@@ -45,8 +46,6 @@ export const getUserSets = (user: string) => { return api.get<Set[]>(`/sets/${us
 export const getUsersRatings = () => { return api.get('/users-ratings') }
 
 const backendApi = {
-  setHeader,
-
   createQuestion,
   deleteQuestion,
   updateQuestion,
@@ -57,6 +56,7 @@ const backendApi = {
 
   registerUser,
   loginUser,
+  logout,
 
   getFilteredQuestions,
 

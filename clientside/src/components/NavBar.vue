@@ -60,7 +60,7 @@ const { user } = storeToRefs(useUserStore());
                 <q-menu style="width: 20%">
                     <q-list v-if="user.length <= 0">
                         <login-register-form />
-                        <login-register-form registerUser="true" />
+                        <login-register-form :registerUser="true" />
                     </q-list>
                     <q-item v-else clickable @click="useUserStore().logout()">
                        <q-item-section> Logout </q-item-section>

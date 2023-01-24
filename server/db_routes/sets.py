@@ -4,7 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi import APIRouter, Depends, HTTPException, Body
 from server.app import set_coll
 from db_routes.question import Question
-from id_model import PyObjectId
+from models import PyObjectId
 from db_routes.users import get_current_user
 
 #Can modularize path operations w/the API Router

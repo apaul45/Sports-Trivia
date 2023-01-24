@@ -8,6 +8,8 @@ app = FastAPI()
 
 load_dotenv()
 db_key = os.getenv("DB_KEY")
+origin = os.getenv("ORIGIN")
+
 database = motor.motor_asyncio.AsyncIOMotorClient(db_key).st
 
 questions_coll = database.get_collection("questions")
@@ -25,7 +27,7 @@ app.include_router(aggregation_router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins="*",
+    allow_origins=origin,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

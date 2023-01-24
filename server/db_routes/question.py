@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, Body, HTTPException
 
 import sys
 sys.path.insert(0,"..")
-from server.id_model import PyObjectId
+from server.models import PyObjectId
 
 # import requests 
 # from bs4 import BeautifulSoup
