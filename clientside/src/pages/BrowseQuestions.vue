@@ -13,6 +13,7 @@ import { errorStore } from 'src/stores/error-store';
 const showQuestionModal = ref(false);
 const showFilters = ref(false);
 const filteredQuestions = ref([]);
+const showOnlyUserQuestions = ref(false);
 
 const router = useRouter();
 const currentRoute = router.currentRoute.value.path;
@@ -101,7 +102,7 @@ const saveSet = async() => {
                 />
 
                 <q-table v-else
-                :rows="filteredQuestions"
+                :rows="showOnlyUserQuestions ? set.questions : filteredQuestions"
                 :columns="columns"
                 row-key="question"
                 selection="multiple"
@@ -113,6 +114,10 @@ const saveSet = async() => {
                         <q-btn color="primary" @click="saveSet"> 
                             Finish Adding To Set
                         </q-btn>
+
+                        <q-space />
+
+                        <q-toggle label="Only show questions in set" v-model="showOnlyUserQuestions" />
                     </template>
                 </q-table>
                 
