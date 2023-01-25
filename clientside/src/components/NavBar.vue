@@ -15,7 +15,7 @@ const { user } = storeToRefs(useUserStore());
             flat 
             no-caps 
             padding="none"
-            size="40px"
+            size="220%"
             class="home"
             v-close-popup
             > 
@@ -29,7 +29,7 @@ const { user } = storeToRefs(useUserStore());
             flat 
             no-caps 
             padding="sm"
-            size="30px" 
+            size="160%" 
             :class="'browse ' + ($route.path === '/' ? 'nav-buttons' : '')"
             >
                 Home
@@ -40,7 +40,7 @@ const { user } = storeToRefs(useUserStore());
             flat 
             no-caps 
             padding="sm"
-            size="30px" 
+            size="160%" 
             :class="'browse ' + ($route.path === '/questions' ? 'nav-buttons' : '')"
             >
                 Browse
@@ -53,7 +53,7 @@ const { user } = storeToRefs(useUserStore());
             round 
             color="primary" 
             padding="sm" 
-            size="20px">
+            size="120%">
                 <q-icon v-if="user.length > 0" name="person" />
                 <q-icon v-else name="no_accounts" />
 
@@ -89,6 +89,7 @@ const { user } = storeToRefs(useUserStore());
 .nav-buttons {
   text-decoration-line: underline;
   text-decoration-style: solid;
-  text-decoration-thickness: 1%;
+  text-decoration-thickness: 14%;
+  text-underline-offset: 0.64em;
 }
 </style>

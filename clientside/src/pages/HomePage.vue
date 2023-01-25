@@ -46,7 +46,7 @@ const userSets = computed({
 
 <template>
     <h1 id="questions">
-        Welcome<span v-if="user.length > 0"> {{ " " + user }}</span>!
+        Welcome<span v-if="user.length > 0"> {{ ", " + user }}</span>!
     </h1>
 
     <div v-if="user.length > 0">
@@ -65,6 +65,13 @@ const userSets = computed({
 
     <div class="q-gutter-md row items-start lists">
         <h2 class="list-headings">All Lists</h2>
+
+        <q-spinner
+        v-if="allSetsComputed.length === 0"
+        color="primary"
+        size="3em"
+        />
+
         <q-separator />
     </div>
 
